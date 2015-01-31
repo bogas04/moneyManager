@@ -2,6 +2,7 @@
 var _ = require('lodash');
 var Company = require('./company.model');
 var Agent = require('../agent/agent.model');
+var Customer = require('../customer/customer.model');
 var bcrypt = require('bcrypt');
 var saltSize = 10;
 
@@ -101,6 +102,31 @@ exports.create_agents = function(req, res) {
           if(!agent) { return res.json(500, { error : true, msg : "Internal DB error", data :null}); }
           return res.json(201, { error : false , msg : "Agent created", data : readyObject(agent)});
         });       
+      } else { return res.json(401,{ error : true, msg : "Invalid password", date : null }); }
+    });
+  });
+};
+
+/*
+============================
+  Customer related queries  
+============================
+*/
+
+// Get list of agents 
+exports.retrieve_customers = function(req, res) {
+  if(!req.params.username || !req.query.password) {
+    return res.json(403, {error : true, msg : "Username and password are required fields"});
+  }
+  Company.findOne({username : req.params.username}, function(err, company) {
+    if(err) { return handleError(res, err); }
+    if(!company) { return res.json(404, { error : true, msg : "Company not found", data : null}); }
+    bcrypt.compare(req.query.password, company.hashed_password, function(err, result) {
+      if(result) {
+        Customer.find({company : company._id}, function(err, customers) {
+          if(err) { return handleError(res, err); }
+          return res.json(200, { error : false , msg : "Customers retrieved", data : customers }); 
+        });
       } else { return res.json(401,{ error : true, msg : "Invalid password", date : null }); }
     });
   });

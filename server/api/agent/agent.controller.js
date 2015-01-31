@@ -18,9 +18,10 @@ exports.show = function(req, res) {
   if(!req.params.company || !req.params.email || !req.query.password) {
     return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
   }
-  Agent.findOne({ email : req.params.email}).populate('company').exec(function (err, agent) {
+  Agent.findOne({ email : req.params.email}).populate('company customers').exec(function (err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { return res.send(404); }
+    console.log(agent);
     if(agent.company.username != req.params.company) { 
       return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
     }
@@ -91,9 +92,16 @@ exports.create_customer = function(req, res) {
       if(result) {
         delete req.body.customer.committees;
         delete req.body.customer.logs;
-        delete req.body.customer.visible_to;
+        req.body.customer.visible_to = [agent._id];
+        req.body.customer.company = agent.company._id;
         Customer.create(req.body.customer, function(err, customer) {
-          return res.json(201, { error : false, msg : "Customer created successfuly", data : customer});
+          if(err) { return handleError(res, err); }
+          if(!customer) { return res.json(500, {error : true, msg : "Internal DB error", data : null}); }
+          agent.customers.push(customer._id);
+          agent.save(function(err, new_agent) {
+            // if(err) add to logs
+            return res.json(201, { error : false, msg : "Customer created successfuly", data : customer});
+          });
         }); 
       } else {
         return res.json(403, { error : true, msg : "Invalid password for "+agent.email+" agent", data :null});
@@ -102,8 +110,34 @@ exports.create_customer = function(req, res) {
   });
 };
 
+exports.retrieve_customer = function(req, res) {
+  if(!req.params.company || !req.params.email || !req.query.password) {
+    return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
+  }
+  if(!req.query.phone) {
+    return res.json(403, { error : true, msg : "Customer phone number is a required field", data : null});
+  }
+  Agent.findOne({ email : req.params.email}).populate('company').exec(function (err, agent) {
+    if(err) { return handleError(res, err); }
+    if(!agent) { return res.send(404); }
+    if(agent.company.username != req.params.company) { 
+      return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
+    }
+    bcrypt.compare(req.query.password, agent.hashed_password, function(err, result) {
+      if(result) {
+        Customer.findOne({ phone : req.query.phone, visible_to : agent._id}, function (err, customer) {
+          if(err) { return handleError(res, err); }
+          if(!customer) { return res.json(404, { error : true, msg : "No such customer found", data : null }); }
+          return res.json(201, { error : false, msg : "Customer retrieved successfuly", data : customer});
+        });
+      } else {
+        return res.json(403, { error : true, msg : "Invalid password for "+agent.email+" agent", data :null});
+      }  
+    });
+  });
+};
 
-exports.create_customer = function(req, res) {
+exports.update_customer = function(req, res) {
   if(!req.params.company || !req.params.email || !req.body.password) {
     return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
   }
@@ -118,11 +152,16 @@ exports.create_customer = function(req, res) {
     }
     bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
       if(result) {
-        delete req.body.customer.committees;
-        delete req.body.customer.logs;
-        delete req.body.customer.visible_to;
-        Customer.create(req.body.customer, function(err, customer) {
-          return res.json(201, { error : false, msg : "Customer created successfuly", data : customer});
+        Customer.findOne({ phone : req.query.phone, visible_to : agent._id}, function (err, customer) {
+          if(err) { return handleError(res, err); }
+          if(!customer) { return res.json(404, { error : true, msg : "No such customer found", data : null }); }
+          delete req.body.customer._id;
+          var updated = _.merge(customer, req.body.customer);
+          customer.save(req.body.customer, function(err, up_customer) {
+            if(err) { return handleError(res, err); }
+            if(!up_customer) { return res.json(500, {error : true, msg : "Internal DB error", data : null }); }
+            return res.json(201, { error : false, msg : "Customer updated successfuly", data : customer});
+          });
         }); 
       } else {
         return res.json(403, { error : true, msg : "Invalid password for "+agent.email+" agent", data :null});
@@ -131,6 +170,32 @@ exports.create_customer = function(req, res) {
   });
 };
 
+
+exports.destroy_customer = function(req, res) {
+  if(!req.params.company || !req.params.email || !req.body.password) {
+    return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
+  }
+  if(!req.body.customer || !req.body.customer.phone) {
+    return res.json(403, { error : true, msg : "Customer phone number is a required field", data : null});
+  }
+  Agent.findOne({ email : req.params.email}).populate('company').exec(function (err, agent) {
+    if(err) { return handleError(res, err); }
+    if(!agent) { return res.send(404); }
+    if(agent.company.username != req.params.company) { 
+      return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
+    }
+    bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
+      if(result) {
+        Customer.remove( { phone : req.body.customer.phone }, function(err) {
+          if(err) { return handleError(res, err); }
+          return res.json(201, { error : false, msg : "Customer deleted successfuly", data : null});
+        }); 
+      } else {
+        return res.json(403, { error : true, msg : "Invalid password for "+agent.email+" agent", data :null});
+      }  
+    });
+  });
+};
 
 /*
 ====================
