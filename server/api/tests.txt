@@ -1,0 +1,10 @@
+1) CRUD on a new admin
+2) Create  a new company with new admin and super admin
+3) Update and Retrieve a company details 
+4) Create agents from a company account
+5) Retrieve all agents' details of a company
+6) Retrieve an agent's details of a company
+7) CRUD on customers by an agent
+8) CRUD on a committee by an agent
+9) Retrieve all customer details and committee details of a company
+

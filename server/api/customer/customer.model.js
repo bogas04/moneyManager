@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var CustomerSchema = new Schema({
+  company : { type : Schema.Types.ObjectId, ref : 'Company' },
   name : String,
   phone : String,
   email : String,
@@ -40,5 +41,5 @@ var CustomerSchema = new Schema({
     }
   }]
 });
-
+CustomerSchema.index ({phone : 1, company : 1}, {unique : true});
 module.exports = mongoose.model('Customer', CustomerSchema);

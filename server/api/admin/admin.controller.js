@@ -3,11 +3,15 @@
 var _ = require('lodash');
 var async = require('async');
 var Admin = require('./admin.model');
+var Company = require('../company/company.model');
 var bcrypt = require('bcrypt');
 var saltSize = 10;
 
 // TODO Improve response JSONs 
 // TODO Add some API secret logic
+// TODO Validations
+// TODO API spec
+
 
 // Get list of admins
 exports.index = function(req, res) {
@@ -43,7 +47,13 @@ exports.show = function(req, res) {
     if(err) { return handleError(res, err); }
     bcrypt.compare(req.query.password, admin.hashed_password, function (err,result) {
       if(result) {
-        return res.json(200, readyObject(admin));
+        if(admin.isSuper) {
+          Company.find({}, function(err, companies) {
+            if(err) { return handleError (res,err); }
+            admin.companies = companies;
+            return res.json(200, readyObject(admin)); 
+          });
+        } else { return res.json(200, readyObject(admin)); }
       } else {
         return res.json(401, []);
       } 
@@ -126,6 +136,39 @@ exports.destroy = function(req, res) {
   });
 };
 
+exports.create_company = function (req, res) {
+  // auth the admin
+  if(!req.body.email || !req.body.password) {
+    return res.json(403, {error : true, msg : "Email and password of admin are required fields"});
+  }
+  Admin.findOne({ email : req.body.email }, function(err, admin) {
+    if(!admin) { return res.send(404); }
+    bcrypt.compare(req.body.password, admin.hashed_password, function (err,result) {
+      if(result) {
+        console.log(req.body);
+        if(!req.body.company || !req.body.company.username || !req.body.company.owner.email || !req.body.company.password) {
+          return res.json(403, { error : true, msg : "Company's username/owner's email id or password is missing"});
+        }
+        req.body.company.hashed_password = bcrypt.hashSync(req.body.company.password, bcrypt.genSaltSync(saltSize));
+        delete req.body.company.password;
+        // create company
+        Company.create(req.body.company, function(err, company) {
+          if(err) { return handleError(res, err); }
+          if(!admin.isSuper) { 
+            admin.companies.push(company._id);
+            admin.save();
+          }
+          return res.json(200, {error : false, msg : "Company added", obj : readyObject(company)}); 
+        });
+
+      } else {
+        return res.json(401, []);
+      } 
+    });
+  });
+};
+
+// Helper functions 
 function handleError(res, err) {
   return res.send(500, err);
 }

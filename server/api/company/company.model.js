@@ -5,9 +5,12 @@ var mongoose = require('mongoose'),
 
 var CompanySchema = new Schema({
   name: String,
-  owner : String,
-  email : String,
+  username : {type :String, unique : true },
   hashed_password : String,
+  owner : {
+    name : String,
+    email : String
+  },
   url : String,
   subscription : {
     type : { type : String, enum : ['fixed', 'one_time']},

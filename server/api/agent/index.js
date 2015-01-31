@@ -5,11 +5,7 @@ var controller = require('./agent.controller');
 
 var router = express.Router();
 
-router.get('/', controller.index);
-router.get('/:id', controller.show);
-router.post('/', controller.create);
-router.put('/:id', controller.update);
-router.patch('/:id', controller.update);
-router.delete('/:id', controller.destroy);
-
+router.get('/:company/:email', controller.show);
+router.put('/:company/:email', controller.update);
+router.post('/:company/:email/customer', controller.create_customer);
 module.exports = router;
