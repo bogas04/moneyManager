@@ -70,11 +70,10 @@ exports.update = function(req, res) {
 };
 
 /*
-============================
+=============================
   Customer related queries  
-============================
+=============================
 */
-
 exports.create_customer = function(req, res) {
   if(!req.params.company || !req.params.email || !req.body.password) {
     return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
@@ -109,7 +108,6 @@ exports.create_customer = function(req, res) {
     });
   });
 };
-
 exports.retrieve_customer = function(req, res) {
   if(!req.params.company || !req.params.email || !req.query.password) {
     return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
@@ -136,7 +134,6 @@ exports.retrieve_customer = function(req, res) {
     });
   });
 };
-
 exports.update_customer = function(req, res) {
   if(!req.params.company || !req.params.email || !req.body.password) {
     return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
@@ -152,7 +149,7 @@ exports.update_customer = function(req, res) {
     }
     bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
       if(result) {
-        Customer.findOne({ phone : req.query.phone, visible_to : agent._id}, function (err, customer) {
+        Customer.findOne({ phone : req.body.committee.phone, visible_to : agent._id}, function (err, customer) {
           if(err) { return handleError(res, err); }
           if(!customer) { return res.json(404, { error : true, msg : "No such customer found", data : null }); }
           delete req.body.customer._id;
@@ -169,8 +166,6 @@ exports.update_customer = function(req, res) {
     });
   });
 };
-
-
 exports.destroy_customer = function(req, res) {
   if(!req.params.company || !req.params.email || !req.body.password) {
     return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
@@ -189,6 +184,128 @@ exports.destroy_customer = function(req, res) {
         Customer.remove( { phone : req.body.customer.phone }, function(err) {
           if(err) { return handleError(res, err); }
           return res.json(201, { error : false, msg : "Customer deleted successfuly", data : null});
+        }); 
+      } else {
+        return res.json(403, { error : true, msg : "Invalid password for "+agent.email+" agent", data :null});
+      }  
+    });
+  });
+};
+
+/*
+=============================
+  Committee related queries  
+=============================
+*/
+
+exports.create_committee = function(req, res) {
+  if(!req.params.company || !req.params.username || !req.body.password) {
+    return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
+  }
+  if(!req.body.committee || !req.body.committee.phone) {
+    return res.json(403, { error : true, msg : "Committee phone number is a required field", data : null});
+  }
+  Agent.findOne({ email : req.params.username}).populate('company').exec(function (err, agent) {
+    if(err) { return handleError(res, err); }
+    if(!agent) { return res.send(404); }
+    if(agent.company.username != req.params.company) { 
+      return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
+    }
+    bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
+      if(result) {
+        req.body.committee.visible_to = [agent._id];
+        req.body.committee.company = agent.company._id;
+        Committee.create(req.body.committee, function(err, committee) {
+          if(err) { return handleError(res, err); }
+          if(!committee) { return res.json(500, {error : true, msg : "Internal DB error", data : null}); }
+          agent.committees.push(committee._id);
+          agent.save(function(err, new_agent) {
+            // if(err) add to logs
+            return res.json(201, { error : false, msg : "Committee created successfuly", data : committee});
+          });
+        }); 
+      } else {
+        return res.json(403, { error : true, msg : "Invalid password for "+agent.email+" agent", data :null});
+      }  
+    });
+  });
+};
+exports.retrieve_committee = function(req, res) {
+  if(!req.params.company || !req.params.username || !req.query.password) {
+    return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
+  }
+  if(!req.query.username) {
+    return res.json(403, { error : true, msg : "Committee username is a required field", data : null});
+  }
+  Agent.findOne({ email : req.params.username}).populate('company').exec(function (err, agent) {
+    if(err) { return handleError(res, err); }
+    if(!agent) { return res.send(404); }
+    if(agent.company.username != req.params.company) { 
+      return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
+    }
+    bcrypt.compare(req.query.password, agent.hashed_password, function(err, result) {
+      if(result) {
+        Committee.findOne({ username : req.query.username, visible_to : agent._id}, function (err, committee) {
+          if(err) { return handleError(res, err); }
+          if(!committee) { return res.json(404, { error : true, msg : "No such committee found", data : null }); }
+          return res.json(201, { error : false, msg : "Committee retrieved successfuly", data : committee});
+        });
+      } else {
+        return res.json(403, { error : true, msg : "Invalid password for "+agent.email+" agent", data :null});
+      }  
+    });
+  });
+};
+exports.update_committee = function(req, res) {
+  if(!req.params.company || !req.params.username || !req.body.password) {
+    return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
+  }
+  if(!req.body.committee || !req.body.committee.username) {
+    return res.json(403, { error : true, msg : "Committee username is a required field", data : null});
+  }
+  Agent.findOne({ email : req.params.username}).populate('company').exec(function (err, agent) {
+    if(err) { return handleError(res, err); }
+    if(!agent) { return res.send(404); }
+    if(agent.company.username != req.params.company) { 
+      return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
+    }
+    bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
+      if(result) {
+        Committee.findOne({ username : req.body.committee.username, visible_to : agent._id}, function (err, committee) {
+          if(err) { return handleError(res, err); }
+          if(!committee) { return res.json(404, { error : true, msg : "No such committee found", data : null }); }
+          delete req.body.committee._id;
+          var updated = _.merge(committee, req.body.committee);
+          committee.save(req.body.committee, function(err, up_committee) {
+            if(err) { return handleError(res, err); }
+            if(!up_committee) { return res.json(500, {error : true, msg : "Internal DB error", data : null }); }
+            return res.json(201, { error : false, msg : "Committee updated successfuly", data : committee});
+          });
+        }); 
+      } else {
+        return res.json(403, { error : true, msg : "Invalid password for "+agent.email+" agent", data :null});
+      }  
+    });
+  });
+};
+exports.destroy_committee = function(req, res) {
+  if(!req.params.company || !req.params.username || !req.body.password) {
+    return res.json(403, { error : true, msg : "Company username, email and password are required fields", data : null});
+  }
+  if(!req.body.committee || !req.body.committee.username) {
+    return res.json(403, { error : true, msg : "Committee username is a required field", data : null});
+  }
+  Agent.findOne({ email : req.params.username}).populate('company').exec(function (err, agent) {
+    if(err) { return handleError(res, err); }
+    if(!agent) { return res.send(404); }
+    if(agent.company.username != req.params.company) { 
+      return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
+    }
+    bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
+      if(result) {
+        Committee.remove( { username : req.body.committee.username }, function(err) {
+          if(err) { return handleError(res, err); }
+          return res.json(201, { error : false, msg : "Committee deleted successfuly", data : null});
         }); 
       } else {
         return res.json(403, { error : true, msg : "Invalid password for "+agent.email+" agent", data :null});

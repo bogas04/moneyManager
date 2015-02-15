@@ -31,7 +31,7 @@ angular.module('moneyManagerApp', [
       // Intercept 401s and redirect you to login
       responseError: function(response) {
         if(response.status === 401) {
-          $location.path('/login');
+          $location.path('/login-company');
           // remove any stale tokens
           $cookieStore.remove('token');
           return $q.reject(response);
@@ -43,12 +43,12 @@ angular.module('moneyManagerApp', [
     };
   })
 
-  .run(function ($rootScope, $location, Auth) {
+  .run(function ($rootScope, $location, AuthCompany) {
     // Redirect to login if route requires auth and you're not logged in
     $rootScope.$on('$routeChangeStart', function (event, next) {
-      Auth.isLoggedInAsync(function(loggedIn) {
+      AuthCompany.isLoggedInAsync(function(loggedIn) {
         if (next.authenticate && !loggedIn) {
-          $location.path('/login');
+          $location.path('/login-company');
         }
       });
     });

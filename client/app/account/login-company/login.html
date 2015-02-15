@@ -1,0 +1,52 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <h1>Login <small> for Companies </small></h1>
+    </div>
+    <div class="col-sm-12">
+      <form class="form" name="form" ng-submit="login(form)" novalidate>
+
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" name="username" class="form-control" ng-model="company.username" required>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" class="form-control" ng-model="company.password" required>
+        </div>
+
+        <div class="form-group has-error">
+          <p class="help-block" ng-show="form.username.$error.required && form.password.$error.required && submitted">
+             Please enter your username and password.
+          </p>
+          <p class="help-block" ng-show="form.username.$error.username && submitted">
+             Please enter a valid username.
+          </p>
+          <p class="help-block">{{ errors.other }}</p>
+        </div>
+        <div>
+          <button class="btn btn-inverse btn-lg btn-login" type="submit">
+            Login
+          </button>
+        </div>
+
+        <hr>
+        <!--<div>
+          <a class="btn btn-facebook" href="" ng-click="loginOauth('facebook')">
+            <i class="fa fa-facebook"></i> Connect with Facebook
+          </a>
+          <a class="btn btn-google-plus" href="" ng-click="loginOauth('google')">
+            <i class="fa fa-google-plus"></i> Connect with Google+
+          </a>
+          <a class="btn btn-twitter" href="" ng-click="loginOauth('twitter')">
+            <i class="fa fa-twitter"></i> Connect with Twitter
+          </a>
+          </div>-->
+      </form>
+    </div>
+  </div>
+  <hr>
+</div>

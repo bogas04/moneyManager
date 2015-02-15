@@ -10,6 +10,8 @@ var mongoose = require('mongoose'),
 
 var CommitteeSchema = new Schema({
   start_date : Date,
+  username : { type : String, unique : true },
+  company : { type : Schema.Types.ObjectId, ref : 'Company'},
   duration : {
     count : Number,
     parameter : {

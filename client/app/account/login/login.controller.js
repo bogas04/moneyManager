@@ -2,7 +2,7 @@
 
 angular.module('moneyManagerApp')
   .controller('LoginCtrl', function ($scope, Auth, $location, $window) {
-    $scope.user = {};
+    $scope.admin = {};
     $scope.errors = {};
 
     $scope.login = function(form) {
@@ -10,8 +10,8 @@ angular.module('moneyManagerApp')
 
       if(form.$valid) {
         Auth.login({
-          email: $scope.user.email,
-          password: $scope.user.password
+          email: $scope.admin.email,
+          password: $scope.admin.password
         })
         .then( function() {
           // Logged in, redirect to home

@@ -2,17 +2,17 @@
 
 angular.module('moneyManagerApp')
   .controller('SignupCtrl', function ($scope, Auth, $location, $window) {
-    $scope.user = {};
+    $scope.admin = {};
     $scope.errors = {};
 
     $scope.register = function(form) {
       $scope.submitted = true;
 
       if(form.$valid) {
-        Auth.createUser({
-          name: $scope.user.name,
-          email: $scope.user.email,
-          password: $scope.user.password
+        Auth.createAdmin({
+          name: $scope.admin.name,
+          email: $scope.admin.email,
+          password: $scope.admin.password
         })
         .then( function() {
           // Account created, redirect to home

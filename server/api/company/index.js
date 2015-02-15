@@ -2,15 +2,20 @@
 
 var express = require('express');
 var controller = require('./company.controller');
+var config = require('../../config/environment');
+var auth = require('../../auth-company/auth.service');
 
 var router = express.Router();
 
-router.get('/:username', controller.show);
-router.put('/:username', controller.update);
+router.get('/me', auth.isAuthenticated(), controller.me);
+router.put('/:username', auth.isAuthenticated(), controller.update);
 
-router.get('/:username/agents', controller.retrieve_agents);
-router.post('/:username/agents', controller.create_agents);
+router.get('/agents', auth.isAuthenticated(), controller.retrieve_agents);
+router.get('/agents/:id', auth.isAuthenticated(), controller.retrieve_agent);
+router.post('/agents', auth.isAuthenticated(), controller.create_agent);
 
-router.get('/:username/customers', controller.retrieve_customers);
+router.get('/customers', auth.isAuthenticated(), controller.retrieve_customers);
+router.get('/customers/:id', auth.isAuthenticated(), controller.retrieve_customer);
+router.post('/customers', auth.isAuthenticated(), controller.retrieve_customer);
 
 module.exports = router;
