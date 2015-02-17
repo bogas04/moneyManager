@@ -12,7 +12,7 @@ angular.module('moneyManagerApp')
       return Auth.isLoggedIn() || AuthCompany.isLoggedIn();
       //return AuthCompany.isLoggedIn();
     };
-    $scope.isAdmin = Auth.isAdmin;
+    $scope.isAdmin = Auth.isLoggedIn;
     $scope.isCompany = AuthCompany.isLoggedIn;
 
     $scope.getCurrentAdmin = Auth.getCurrentAdmin;  

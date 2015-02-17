@@ -14,7 +14,7 @@
       <div class="form-group" ng-class="{ 'has-success': form.name.$valid && submitted,
                                           'has-error': form.name.$invalid && submitted }">
         <label>Company Name</label>
-        <input placeholder="Enter your Company Name" type="text" name="name" class="form-control" ng-model="create_company.name"
+        <input placeholder="Enter your Company Name" type="text" name="name" class="form-control" ng-model="createThisCompany.name"
                required/>
         <p class="help-block" ng-show="form.name.$error.required && submitted">
           A name is required
@@ -24,7 +24,7 @@
       <div class="form-group" ng-class="{ 'has-success': form.name.$valid && submitted,
                                           'has-error': form.name.$invalid && submitted }">
         <label>Company Username </label>
-        <input placeholder="Enter your Company Username" type="text" name="username" class="form-control" ng-model="create_company.username"
+        <input placeholder="Enter your Company Username" type="text" name="username" class="form-control" ng-model="createThisCompany.username"
                required/>
         <p class="help-block" ng-show="form.username.$error.required && submitted">
           A name is required
@@ -34,7 +34,7 @@
       <div class="form-group inline" ng-class="{ 'has-success': form.password.$valid && submitted,
                                           'has-error': form.password.$invalid && submitted }">
         <label>Company Password</label>
-        <input placeholder="Enter your Company Password" type="password" name="password" class="form-control" ng-model="create_company.password"
+        <input placeholder="Enter your Company Password" type="password" name="password" class="form-control" ng-model="createThisCompany.password"
                ng-minlength="3"
                required
                mongoose-error/>
@@ -50,7 +50,7 @@
       <div class="form-group form-inline" ng-class="{ 'has-success': form.name.$valid && submitted,
                                           'has-error': form.name.$invalid && submitted }">
         <label>Subscription Type</label>
-        <select name="subscription" class="form-control" ng-model="create_company.subscription" required>
+        <select name="subscription" class="form-control" ng-model="createThisCompany.subscription" required>
           <option value="fixed" >Fixed</option>
           <option value="one_time">One Time</option>
         </select>
@@ -63,13 +63,13 @@
       <div class="form-group" ng-class="{ 'has-success': form.name.$valid && submitted,
                                           'has-error': form.name.$invalid && submitted }">
         <label>Owner Name</label>
-        <input placeholder="Enter your Owner Name" type="text" name="owner_name" class="form-control" ng-model="create_company.owner.name"/>
+        <input placeholder="Enter your Owner Name" type="text" name="owner_name" class="form-control" ng-model="createThisCompany.owner.name"/>
       </div>
       
       <div class="form-group" ng-class="{ 'has-success': form.email.$valid && submitted,
                                           'has-error': form.email.$invalid && submitted }">
         <label>Owner Email</label>
-        <input placeholder="Enter your Owner Email" type="email" name="owner_email" class="form-control" ng-model="create_company.owner.email"
+        <input placeholder="Enter your Owner Email" type="email" name="owner_email" class="form-control" ng-model="createThisCompany.owner.email"
                required
                mongoose-error/>
         <p class="help-block" ng-show="form.owner_email.$error.email && submitted">

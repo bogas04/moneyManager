@@ -26,6 +26,7 @@ angular.module('moneyManagerApp')
         }).
         success(function(data) {
           $cookieStore.put('token', data.token);
+          $cookieStore.put('isAdmin', false);
           currentCompany = Company.get();
           deferred.resolve(data);
           return cb();

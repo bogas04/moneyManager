@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('moneyManagerApp')
-  .controller('CompanyCtrl', function ($scope, $http, AuthCompany, Company) {
+  .controller('CompanyCtrl', function ($scope, $location, $http, AuthCompany, Company) {
     $scope.message = '';
     $scope.company = Company.get();
     /*

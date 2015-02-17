@@ -8,6 +8,18 @@ var Agent = require('../agent/agent.model');
 var Customer = require('../customer/customer.model');
 
 /*
+====================
+  Helper Functions  
+====================
+*/
+
+var validationError = function(res, err) {
+  return res.json(422, err);
+};
+function handleError(res, err) {
+  return res.send(500, err);
+}
+/*
 ===========================
   Company related queries  
 ===========================
@@ -73,7 +85,7 @@ exports.create_agent = function(req, res) {
     return res.json(403, { error : true, msg : "Agent's username/owner's email id or password is missing"});
   }
   var company = req.company;
-  toCreate.company = company._id;;
+  toCreate.company = company._id;
   Agent.create(toCreate, function(err, agent) {
     if(err) { return handleError(res, err); }
     return res.json(201, {error : false, msg : "Agent added", obj : agent.profile}); 
@@ -111,91 +123,14 @@ exports.create_customer = function(req, res) {
     return res.json(403, { error : true, msg : "Agent's username/owner's email id or password is missing"});
   }
   var company = req.company;
-  toCreate.company = company._id;;
+  toCreate.company = company._id;
   Agent.create(toCreate, function(err, agent) {
     if(err) { return handleError(res, err); }
     return res.json(201, {error : false, msg : "Agent added", obj : agent.profile}); 
   });
 };
 
-/*
-====================
-  Helper Functions  
-====================
-*/
-
-function readyObject(obj, filters) {
-  if(!filters) {
-    var filters = ['hashed_password'];
-  }
-  if(obj instanceof Array) {
-    for(var o in obj) {
-      obj[o] = readyObject(obj[o], filters);     
-    }  
-  } else {
-    obj = obj.toJSON();
-    for(var f in filters) {
-      if(filters[f] in obj) { delete obj[filters[f]]; }
-    }
-  }
-  return obj;
-}
-var validationError = function(res, err) {
-  return res.json(422, err);
-};
 exports.authCallback = function(req, res, next) {
   res.redirect('/');
 };
 
-/*
-// OLD
-// Get a single company
-exports.show = function(req, res) {
-  if(!req.params.username || !req.query.password) {
-    return res.json(403, {error : true, msg : "Username and password are required fields"});
-  }
-  Company.findOne( { username : req.params.username }, function (err, company) {
-    if(err) { return handleError(res, err); }
-    if(!company) { return res.send(404); }
-    bcrypt.compare(req.query.password, company.hashed_password, function (err, result) {
-      if(result) { return res.json(200, { error : false, msg : "Company retrieved" , data : readyObject(company) }); }
-      else { return res.json(401, { error : true, msg : "Invalid password", data : null}); } 
-    });
-  });
-};
-
-
-// Updates an existing company in the DB.
-exports.update = function(req, res) {
-  if(!req.params.username || !req.body.password) {
-    return res.json(403, {error : true, msg : "Username and password are required fields"});
-  }
-  if(req.body._id) { delete req.body._id; }
-  Company.findOne({ username : req.params.username}, function (err, company) {
-    if (err) { return handleError(res, err); }
-    if(!company) { return res.send(404); }
-    console.log(req.body); 
-    console.log(company);
-    bcrypt.compare(req.body.password, company.hashed_password, function (err, result) {
-      if(result) {
-        req.body.username = req.body.new_username || company.username; 
-        req.body.hashed_password = req.body.new_password ? (
-            bcrypt.hashSync(req.body.new_password, bcrypt.genSaltSync(saltSize))
-        ) : company.hashed_password;
-        
-        delete req.body.new_username;
-        delete req.body.new_password;
-        delete req.body.password;
-        delete req.body.logs;
-
-        var updated = _.merge(company, req.body);
-        updated.save(function(err,company) {
-          if (err) { return handleError(res, err); }
-          return res.json(200, company);
-        });
-        return res.json(200, { error : false, msg : "Company updated" , data : readyObject(company) });
-      } else { return res.json(401, {error : true, msg : "Invalid password", data : null}); } 
-    });
-  });
-};
-*/

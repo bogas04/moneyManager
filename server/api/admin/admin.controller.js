@@ -7,6 +7,13 @@ var async = require('async');
 var Admin = require('./admin.model');
 var Company = require('../company/company.model');
 
+// Helper functions 
+function handleError(res, err) {
+  return res.send(500, err);
+}
+var validationError = function(res, err) {
+  return res.json(422, err);
+};
 // TODO Improve response JSONs 
 // TODO Add some API secret logic
 // TODO Validations
@@ -28,7 +35,7 @@ exports.show = function(req, res, next) {
 
   Admin.findById(userId, function(err, admin) {
     if(err) return next(err);
-    if(!user) return res.send(401);
+    if(!admin) return res.send(401);
     res.json(admin.profile);
   });
 };
@@ -103,31 +110,6 @@ exports.create_company = function (req, res) {
   });
 };
 
-// Helper functions 
-function handleError(res, err) {
-  return res.send(500, err);
-}
-function readyObject(obj, filters) {
-  if(!filters) {
-    var filters = ['__v', 'hashed_password'];
-  }
-  console.log(filters);
-  if(obj instanceof Array) {
-    for(var o in obj) {
-      obj[o] = readyObject(obj[o], filters);     
-    }  
-  } else {
-    obj = obj.toJSON();
-    for(var f in filters) {
-      if(filters[f] in obj) { delete obj[filters[f]]; }
-    }
-  }
-  return obj;
-}
-
-var validationError = function(res, err) {
-  return res.json(422, err);
-};
 exports.authCallback = function(req, res, next) {
   res.redirect('/');
 };

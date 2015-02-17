@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('moneyManagerApp')
-  .controller('AdminCtrl', function ($scope, $http, Auth, Admin) {
+  .controller('AdminCtrl', function ($scope, $location, $http, Auth, Admin) {
     $scope.message = '';
     $scope.admin = Admin.get();
     if(Auth.isSuper) {
@@ -10,12 +10,12 @@ angular.module('moneyManagerApp')
     $scope.createCompany = function(form) {
       $scope.submitted = true;
       if(form.$valid) {
-        $http.post('/api/admin/company', $scope.create_company)
+        $http.post('/api/admin/company', $scope.createThisCompany)
         .success( function (data, status, headers, config){
-          console.log(data);
+          console.log(data, status, headers, config);
         })
         .error( function (data, status, headers, config){
-          console.log(data);
+          console.log(data, status, headers, config);
         });
       }
     };

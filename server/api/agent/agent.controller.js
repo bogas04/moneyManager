@@ -22,7 +22,7 @@ exports.show = function(req, res) {
     if(err) { return handleError(res, err); }
     if(!agent) { return res.send(404); }
     console.log(agent);
-    if(agent.company.username != req.params.company) { 
+    if(agent.company.username !== req.params.company) { 
       return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
     }
     bcrypt.compare(req.query.password, agent.hashed_password, function(err, result) {
@@ -43,7 +43,7 @@ exports.update = function(req, res) {
   Agent.findOne({ email : req.params.email}).populate('company').exec(function (err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { return res.send(404); }
-    if(agent.company.username != req.params.company) { 
+    if(agent.company.username !== req.params.company) { 
       return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
     }
     bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
@@ -84,7 +84,7 @@ exports.create_customer = function(req, res) {
   Agent.findOne({ email : req.params.email}).populate('company').exec(function (err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { return res.send(404); }
-    if(agent.company.username != req.params.company) { 
+    if(agent.company.username !== req.params.company) { 
       return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
     }
     bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
@@ -118,7 +118,7 @@ exports.retrieve_customer = function(req, res) {
   Agent.findOne({ email : req.params.email}).populate('company').exec(function (err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { return res.send(404); }
-    if(agent.company.username != req.params.company) { 
+    if(agent.company.username !== req.params.company) { 
       return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
     }
     bcrypt.compare(req.query.password, agent.hashed_password, function(err, result) {
@@ -144,7 +144,7 @@ exports.update_customer = function(req, res) {
   Agent.findOne({ email : req.params.email}).populate('company').exec(function (err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { return res.send(404); }
-    if(agent.company.username != req.params.company) { 
+    if(agent.company.username !== req.params.company) { 
       return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
     }
     bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
@@ -176,7 +176,7 @@ exports.destroy_customer = function(req, res) {
   Agent.findOne({ email : req.params.email}).populate('company').exec(function (err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { return res.send(404); }
-    if(agent.company.username != req.params.company) { 
+    if(agent.company.username !== req.params.company) { 
       return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
     }
     bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
@@ -208,7 +208,7 @@ exports.create_committee = function(req, res) {
   Agent.findOne({ email : req.params.username}).populate('company').exec(function (err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { return res.send(404); }
-    if(agent.company.username != req.params.company) { 
+    if(agent.company.username !== req.params.company) { 
       return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
     }
     bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
@@ -240,7 +240,7 @@ exports.retrieve_committee = function(req, res) {
   Agent.findOne({ email : req.params.username}).populate('company').exec(function (err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { return res.send(404); }
-    if(agent.company.username != req.params.company) { 
+    if(agent.company.username !== req.params.company) { 
       return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
     }
     bcrypt.compare(req.query.password, agent.hashed_password, function(err, result) {
@@ -266,7 +266,7 @@ exports.update_committee = function(req, res) {
   Agent.findOne({ email : req.params.username}).populate('company').exec(function (err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { return res.send(404); }
-    if(agent.company.username != req.params.company) { 
+    if(agent.company.username !== req.params.company) { 
       return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
     }
     bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
@@ -298,7 +298,7 @@ exports.destroy_committee = function(req, res) {
   Agent.findOne({ email : req.params.username}).populate('company').exec(function (err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { return res.send(404); }
-    if(agent.company.username != req.params.company) { 
+    if(agent.company.username !== req.params.company) { 
       return res.json(403, {error : true, msg : "Agent doesn't belong to the company", data :null}); 
     }
     bcrypt.compare(req.body.password, agent.hashed_password, function(err, result) {
@@ -325,7 +325,7 @@ function handleError(res, err) {
 }
 function readyObject(obj, filters) {
   if(!filters) {
-    var filters = ['hashed_password'];
+    filters = ['hashed_password'];
   }
   if(obj instanceof Array) {
     for(var o in obj) {

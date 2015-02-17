@@ -1,0 +1,6 @@
+MongoLab URI : 
+bogas04:riseconsulting@ds045021.mongolab.com:45021/moneymanager 
+Add MongoHQ URI to Heroku : 
+heroku config:set MONGOHQ_URL="MongoLab URI : bogas04:riseconsulting@ds045021.mongolab.com:45021/moneymanager"
+Connect via Terminal : 
+mongo ds045021.mongolab.com:45021/moneymanager -u bogas04 -p riseconsulting
