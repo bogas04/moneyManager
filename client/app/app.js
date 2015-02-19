@@ -53,7 +53,6 @@ angular.module('moneyManagerApp', [
           }
         }); 
       } else { 
-        console.log('Yes, I\'m calling AuthCompany!'); 
         AuthCompany.isLoggedInAsync(function(loggedIn) {
           if (next.authenticate && !loggedIn) {
             $location.path('/login-company');

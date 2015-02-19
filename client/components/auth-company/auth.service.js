@@ -115,11 +115,13 @@ angular.module('moneyManagerApp')
           currentCompany.$promise.then(function() {
             cb(true);
           }).catch(function() {
+            currentCompany  = {};
             cb(false);
           });
         } else if(currentCompany.hasOwnProperty('owner')) {
           cb(true);
         } else {
+          currentCompany  = {};
           cb(false);
         }
       },

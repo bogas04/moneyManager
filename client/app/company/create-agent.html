@@ -1,32 +1,60 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 <div class="container">
   <div class="page-header">
-    <h1>Dashboard</h1>
+    <h1>Create Agent</h1>
   </div>
-  <div class="container row">  
-    <h3>Welcome {{company.name.split(' ')[0]}}, <small> what would you like to do? </small> </h3>
-    <div class="row">
-      <div class="col-md-4"> 
-        <h4> <span class="glyphicon glyphicon-user"> </span> Manage Agents </h4>
-        <ul>
-          <li> <a href="/company/list/agent"> List all agents </a> </li>
-          <li> <a href="/company/statistics/agent"> Check statistics </a> </li>
-        </ul>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="#">Create Agent</a></li>
+  </ol>
+  <div class="row container"> 
+    <h3> Agent Details </h3> 
+    <form class="form" name="form" ng-submit="createAgent(form)" novalidate>
+
+      <div class="form-group" ng-class="{ 'has-success': form.name.$valid && submitted,
+                                          'has-error': form.name.$invalid && submitted }">
+        <label>Agent Name</label>
+        <input placeholder="Enter your Agent Name" type="text" name="name" class="form-control" ng-model="createThisAgent.name"
+               required/>
+        <p class="help-block" ng-show="form.name.$error.required && submitted">
+          A name is required
+        </p>
       </div>
-      <div class="col-md-4">
-        <h4> <span class="glyphicon glyphicon-briefcase"> </span> Manage Customers </h4>
-        <ul>
-          <li> <a href="/company/list/customer"> List all customers </a> </li>
-          <li> <a href="/company/create/company"> Create customer </a> </li>
-          <li> <a href="/company/statistics/company"> Check customer logs </a> </li>
-        </ul>
+
+      <div class="form-group" ng-class="{ 'has-success': form.email.$valid && submitted,
+                                          'has-error': form.email.$invalid && submitted }">
+        <label> Email</label>
+        <input placeholder="Enter your  Email" type="email" name="email" class="form-control" ng-model="createThisAgent.email"
+               required
+               mongoose-error/>
+        <p class="help-block" ng-show="form.email.$error.email && submitted">
+          Doesn't look like a valid email.
+        </p>
+        <p class="help-block" ng-show="form.email.$error.required && submitted">
+          What's your email address?
+        </p>
+        <p class="help-block" ng-show="form.email.$error.mongoose">
+          {{ errors.email }}
+        </p>
       </div>
-      <div class="col-md-4">
-        <h4> <span class="glyphicon glyphicon-wrench"> </span> Manage your account </h4>
-        <ul>
-          <li> <a href="/company/profile"> Your profile </a> </li>
-        </ul>
+
+      <div class="form-group inline" ng-class="{ 'has-success': form.password.$valid && submitted,
+                                          'has-error': form.password.$invalid && submitted }">
+        <label>Agent Password</label>
+        <input placeholder="Enter your Agent Password" type="password" name="password" class="form-control" ng-model="createThisAgent.password"
+               ng-minlength="3"
+               required
+               mongoose-error/>
+        <p class="help-block"
+           ng-show="(form.password.$error.minlength || form.password.$error.required) && submitted">
+          Password must be at least 3 characters.
+        </p>
+        <p class="help-block" ng-show="form.password.$error.mongoose">
+          {{ errors.password }}
+        </p>
       </div>
-    </div>
-  </div>
+
+      <p class="help-block"> {{ message }} </p>
+      <button class="btn btn-lg btn-primary" type="submit">Create</button>
+    </form>
 </div>

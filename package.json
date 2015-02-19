@@ -5,9 +5,9 @@
   "dependencies": {
     "async" : "latest",
     "express": "~4.0.0",
-    "bcrypt" : "latest",
     "morgan": "~1.0.0",
     "body-parser": "~1.5.0",
+    "bcrypt": "latest",
     "method-override": "~1.0.0",
     "serve-favicon": "~2.0.1",
     "cookie-parser": "~1.0.1",

@@ -6,7 +6,7 @@ var mongoose = require('mongoose'),
 var CustomerSchema = new Schema({
   company : { type : Schema.Types.ObjectId, ref : 'Company' },
   name : String,
-  phone : String,
+  phone : { type : String, required : true },
   email : String,
   address : {
     title : String,
@@ -16,11 +16,6 @@ var CustomerSchema = new Schema({
     }
   },
   committees : [{ type : Schema.Types.ObjectId, ref : 'Committee' }],
-  logs : [{ 
-    term : String,
-    date : Date,
-    paid : Boolean,  
-  }],
   visible_to : [{ type : Schema.Types.ObjectId, ref : 'Agent' }],
   terms : [{
     title : String,
@@ -38,8 +33,13 @@ var CustomerSchema = new Schema({
           enum : ['days', 'months', 'years']
         }
      }
+    },
+    logs : {
+      date : Date,
+      paid : Boolean    
     }
   }]
 });
 CustomerSchema.index ({phone : 1, company : 1}, {unique : true});
+
 module.exports = mongoose.model('Customer', CustomerSchema);

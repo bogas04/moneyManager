@@ -1,25 +1,25 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 <div class="container">
   <div class="page-header">
-    <h1>Create Customer</h1>
+    <h1>Update Customer</h1>
   </div>
   <ol class="breadcrumb">  
     <li><a href="company">Home</a></li>
-    <li><a href="#">Create Customer</a></li>
+    <li><a href="#">Update Customer</a></li>
   </ol>
   <div class="row container"> 
     <h3> Customer Details </h3> 
-    <form class="form" name="form" ng-submit="createCustomer(form)" novalidate>
+    <form class="form" name="form" ng-submit="updateCustomer(form)" novalidate>
 
       <div class="form-group">           
         <label>Customer Name</label>
-        <input placeholder="Enter your Customer Name" type="text" name="name" class="form-control" ng-model="createThisCustomer.name"/>
+        <input placeholder="Enter your Customer Name" type="text" name="name" class="form-control" ng-model="updateThisCustomer.name"/>
       </div>
 
       <div class="form-group" ng-class="{ 'has-success': form.phone.$valid && submitted,
                                           'has-error': form.phone.$invalid && submitted }">
         <label>Customer Phone </label>
-        <input placeholder="Enter your Customer Phone" type="text" phone="phone" class="form-control" ng-model="createThisCustomer.phone"
+        <input placeholder="Enter your Customer Phone" type="text" phone="phone" class="form-control" ng-model="updateThisCustomer.phone"
                required/>
         <p class="help-block" ng-show="form.phone.$error.required && submitted">
           A phone number is required
@@ -29,7 +29,7 @@
       <div class="form-group" ng-class="{ 'has-success': form.email.$valid && submitted,
                                           'has-error': form.email.$invalid && submitted }">
         <label>Customer Email</label>
-        <input placeholder="Enter your Customer Email" type="email" name="owner_email" class="form-control" ng-model="createThisCustomer.email" mongoose-error/>
+        <input placeholder="Enter your Customer Email" type="email" name="owner_email" class="form-control" ng-model="updateThisCustomer.email" mongoose-error/>
         <p class="help-block" ng-show="form.owner_email.$error.email && submitted">
           Doesn't look like a valid email.
         </p>
@@ -43,19 +43,19 @@
 
       <div class="form-group">           
         <label>Address</label>
-        <input placeholder="Enter your Address" type="text" address.title="address.title" class="form-control" ng-model="createThisCustomer.address.title"/>
+        <input placeholder="Enter your Address" type="text" address.title="address.title" class="form-control" ng-model="updateThisCustomer.address.title"/>
       </div>
       
       <div class="form-group">           
         <label>Lattitude</label>
-        <input placeholder="Enter your Address" type="text" address.coordinates.lattitude="address.coordinates.lattitude" class="form-control" ng-model="createThisCustomer.address.coordinates.lattitude"/>
+        <input placeholder="Enter your Address" type="text" address.coordinates.lattitude="address.coordinates.lattitude" class="form-control" ng-model="updateThisCustomer.address.coordinates.lattitude"/>
       </div>
       
       <div class="form-group">           
         <label>Longitude</label>
-        <input placeholder="Enter your Address" type="text" address.coordinates.longitude="address.coordinates.longitude" class="form-control" ng-model="createThisCustomer.address.coordinates.longitude"/>
+        <input placeholder="Enter your Address" type="text" address.coordinates.longitude="address.coordinates.longitude" class="form-control" ng-model="updateThisCustomer.address.coordinates.longitude"/>
       </div>
       <p class="help-block"> {{ message }} </p>
-      <button class="btn btn-lg btn-primary" type="submit">Create</button>
+      <button class="btn btn-lg btn-primary" type="submit">Update</button>
     </form>
 </div>

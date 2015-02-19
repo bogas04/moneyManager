@@ -1,32 +1,28 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 <div class="container">
   <div class="page-header">
-    <h1>Dashboard</h1>
+    <h1>List Customers</h1>
   </div>
-  <div class="container row">  
-    <h3>Welcome {{company.name.split(' ')[0]}}, <small> what would you like to do? </small> </h3>
-    <div class="row">
-      <div class="col-md-4"> 
-        <h4> <span class="glyphicon glyphicon-user"> </span> Manage Agents </h4>
-        <ul>
-          <li> <a href="/company/list/agent"> List all agents </a> </li>
-          <li> <a href="/company/statistics/agent"> Check statistics </a> </li>
-        </ul>
-      </div>
-      <div class="col-md-4">
-        <h4> <span class="glyphicon glyphicon-briefcase"> </span> Manage Customers </h4>
-        <ul>
-          <li> <a href="/company/list/customer"> List all customers </a> </li>
-          <li> <a href="/company/create/company"> Create customer </a> </li>
-          <li> <a href="/company/statistics/company"> Check customer logs </a> </li>
-        </ul>
-      </div>
-      <div class="col-md-4">
-        <h4> <span class="glyphicon glyphicon-wrench"> </span> Manage your account </h4>
-        <ul>
-          <li> <a href="/company/profile"> Your profile </a> </li>
-        </ul>
-      </div>
-    </div>
-  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="#">Customer List</a></li>
+  </ol>
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        <th> Name </th>
+        <th> Phone </th>
+        <th> Email </th>
+        <th> Address </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="a in customers">
+        <td> <a href="company/profile/customer/{{a._id}}">{{a.name}}</a> </td>
+        <td> {{a.phone}} </td>
+        <td> {{a.email || "N/A"}} </td>
+        <td> {{a.address.title || "N/A"}} </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

@@ -114,11 +114,13 @@ angular.module('moneyManagerApp')
           currentAdmin.$promise.then(function() {
             cb(true);
           }).catch(function() {
+            currentAdmin = {};
             cb(false);
           });
         } else if(currentAdmin.hasOwnProperty('isSuper')) {
           cb(true);
         } else {
+          currentAdmin = {};
           cb(false);
         }
       },

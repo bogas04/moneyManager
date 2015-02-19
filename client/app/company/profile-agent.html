@@ -1,0 +1,18 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="container">
+  <div class="page-header">
+    <h1>Agent Profile</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="company/list/agent/">Agent List</a></li>
+    <li><a href="#">Agent Profile</a></li>
+  </ol>
+  <div class="row container"> 
+    <h3> Agent Details </h3> 
+    <dl class="dl-horizontal">
+      <dt>Name : </dt> <dd> {{currentAgent.name || "N/A"}}</dd>
+      <dt>Email : </dt> <dd> {{currentAgent.email || "N/A"}}</dd>
+    </dl>
+  </div>
+</div>

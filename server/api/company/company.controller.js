@@ -63,7 +63,7 @@ exports.update = function(req, res) {
 
 // Get list of agents 
 exports.retrieve_agents = function(req, res) {
-  Agent.find({}, function(err, agents) {
+  Agent.find({company : req.company._id} , function(err, agents) {
     if(err) { return handleError(res, err); }
     if(!agents) { return res.json(404, { error : true, msg : "Agents not found", data : []}); }
     res.json(200, agents);
@@ -72,7 +72,7 @@ exports.retrieve_agents = function(req, res) {
 
 exports.retrieve_agent = function(req, res) {
   var agentId = req.params.id;
-  Agent.find({_id : agentId}, function(err, agent) {
+  Agent.find({_id : agentId, company : req.company._id}, function(err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { res.json(agent); }
     else res.json(200, agent);
@@ -92,41 +92,78 @@ exports.create_agent = function(req, res) {
   });
 };
 
+// Delete a agent 
+exports.destroy_agent = function(req, res) {
+  Agent.findOneAndRemove(req.params.id, function (err) {
+    if(err) return validationError(res, err);
+    res.send(204);
+  });
+};
+
 /*
 ============================
   Customer related queries  
 ============================
 */
 
-// Get list of agents 
+// Get list of customers 
 exports.retrieve_customers = function(req, res) {
-  Agent.find({}, function(err, agents) {
+  Customer.find({company : req.company._id}, function(err, customers) {
     if(err) { return handleError(res, err); }
-    if(!agents) { return res.json(404, { error : true, msg : "Agents not found", data : []}); }
-    res.json(200, agents);
+    if(!customers) { return res.json(404, { error : true, msg : "Customers not found", data : []}); }
+    res.json(200, customers);
   });
 };
 
+// Retrieve a single customer 
 exports.retrieve_customer = function(req, res) {
-  var agentId = req.params.id;
-  Agent.find({_id : agentId}, function(err, agent) {
+  var customerId = req.params.id;
+  Customer.find({_id : customerId, company : req.company._id}, function(err, customer) {
     if(err) { return handleError(res, err); }
-    if(!agent) { res.json(agent); }
-    else res.json(200, agent);
+    if(!customer) { res.json(customer); }
+    else res.json(200, customer);
+  });
+};
+
+// Update a customer 
+exports.update_customer = function(req, res) {
+  var updatedCustomer = req.body;
+  Customer.findById(req.params.id, function (err, customer) {
+    if(err) return validationError(res, err);
+    if(!customer) res.json(401);
+    customer.name = updatedCustomer.name || customer.name || "";
+    customer.email = updatedCustomer.email || customer.email || "";
+    customer.phone = updatedCustomer.phone || customer.phone;
+    customer.terms = updatedCustomer.terms || customer.terms || [];
+    customer.address = updatedCustomer.address || customer.address;
+    customer.visible_to = updatedCustomer.visible_to || customer.visible_to;
+    customer.committees = updatedCustomer.committees || customer.committees;
+    customer.save(function(err) {
+      if(err) return validationError(res, err);
+      res.send(200);
+    });
+  });
+};
+
+// Delete a customer 
+exports.destroy_customer = function(req, res) {
+  Customer.findOneAndRemove(req.params.id, function (err) {
+    if(err) return validationError(res, err);
+    res.send(204);
   });
 };
 
 // Create customer 
 exports.create_customer = function(req, res) {
   var toCreate = req.body;
-  if(!toCreate || !toCreate.email || !toCreate.password) {
-    return res.json(403, { error : true, msg : "Agent's username/owner's email id or password is missing"});
+  if(!toCreate || !toCreate.phone) {
+    return res.json(403, { error : true, msg : "Customer's phone is missing"});
   }
   var company = req.company;
   toCreate.company = company._id;
-  Agent.create(toCreate, function(err, agent) {
+  Customer.create(toCreate, function(err, customer) {
     if(err) { return handleError(res, err); }
-    return res.json(201, {error : false, msg : "Agent added", obj : agent.profile}); 
+    return res.json(201, {error : false, msg : "Customer added", obj : customer.profile}); 
   });
 };
 
