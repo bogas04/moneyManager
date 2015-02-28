@@ -1,0 +1,31 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="container">
+  <div class="page-header">
+    <h1>{{currentCustomer.name}} Logs for {{currentTerm.title}}</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="company/list/customer/">Customer List</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}">Customer Profile</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}/terms/">Customer Terms</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}/terms/{{currentTerm.title}}">View Term</a></li>
+    <li><a href="#">View Logs</a></li>
+  </ol>
+  <div class="row container"> 
+    <a href="/company/profile/customer/{{currentCustomer._id}}/terms/{{currentTerm.title}}/logs/add" class="btn btn-primary">Add New</a>
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Paid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="t in currentTerm.logs"> 
+          <td>{{stringifyDate(t.date)}}</td>
+          <td>{{t.paid}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div> 
+</div>

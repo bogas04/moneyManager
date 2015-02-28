@@ -1,0 +1,35 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="container">
+  <div class="page-header">
+    <h1>{{currentCustomer.name}} Terms</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="company/list/customer/">Customer List</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}">Customer Profile</a></li>
+    <li><a href="#">Customer Terms</a></li>
+  </ol>
+  <div class="row container"> 
+    <a href="/company/profile/customer/{{currentCustomer._id}}/terms/add" class="btn btn-primary">Add New</a>
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Term Name</th>
+          <th>Start Date</th>
+          <th>Interest Type</th>
+          <th># Installments</th>
+          <th># Payments</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="t in currentCustomer.terms"> 
+          <td><a href="company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}">{{t.title}}</a></td>
+          <td>{{stringifyDate(t.start_date)}}</td>
+          <td>{{t.interest.type || "N/A"}} {{ t.interest.rate?"@" + t.interest.rate: ""}}</td>
+          <td>{{t.installments.duration.count + " " + t.installments.duration.type}}</td>
+          <td>{{t.logs.length}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div> 
+</div>

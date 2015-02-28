@@ -10,7 +10,7 @@ var mongoose = require('mongoose'),
 
 var CommitteeSchema = new Schema({
   start_date : Date,
-  username : { type : String, unique : true },
+  title : { type : String, unique : true },
   company : { type : Schema.Types.ObjectId, ref : 'Company'},
   duration : {
     count : Number,
@@ -22,7 +22,6 @@ var CommitteeSchema = new Schema({
   members : [{ type : Schema.Types.ObjectId, ref : 'Customer' }],
   visible_to : [{ type : Schema.Types.ObjectId, ref : 'Agent' }],
   logs : [{
-    count : Number,
     date : Date,
     defaulters : [{
       type : Schema.Types.ObjectId, ref : 'Customer' 
@@ -30,4 +29,25 @@ var CommitteeSchema = new Schema({
   }]
 });
 
+
+/**
+ * Virtuals
+ */
+CommitteeSchema
+  .virtual('currentIteration')
+  .set(function(currentIteration) {})
+  .get(function() {
+    var elapsedDays = ((new Date()).getTime() - start_date.getTime())/(1000*3600*24);
+    switch(this.duration.parameter) {
+      case 'months' :
+        // BUGGY!
+        elapsedDays /= 30;
+        break;
+      case 'years' :
+        // BUGGY
+        elapsedDays /= 365;
+        break;
+    }
+    return elapsedDays;
+  });
 module.exports = mongoose.model('Committee', CommitteeSchema);

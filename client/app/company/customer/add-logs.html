@@ -1,0 +1,36 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<script>
+$('.input-group.date').datepicker({
+  format: "dd/mm/yyyy",
+  todayBtn: "linked",
+  orientation: "bottom auto",
+  autoclose: true,
+  todayHighlight: true
+});
+</script>
+<div class="container">
+  <div class="page-header">
+    <h1>Add Log</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="company/list/customer/">Customer List</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}">Customer Profile</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}/terms/">Customer Terms</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}/terms/{{currentTerm.title}}">View Term</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}/terms/{{currentTerm.title}}/logs">View Logs</a></li>
+    <li><a href="#">Add Log</a></li>
+  </ol>
+  <div class="row container"> 
+    <h3> Enter Log Details </h3> 
+    <form class="form" name="form" ng-submit="addLog(form)" novalidate>
+      <div class="form-group">           
+        <label>Log Date</label>
+        <div class="input-group date">
+          <input type="text" class="form-control" ng-model="addThisLog.date" placeholder="Enter start date of this log" ><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+        </div>       
+      </div>
+      <p class="help-block"> {{ message }} </p>
+      <button class="btn btn-lg btn-primary" type="submit">Add</button>
+    </form>
+</div>

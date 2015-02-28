@@ -1,0 +1,71 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="container">
+  <div class="page-header">
+    <h1>Customer Profile</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="company/list/customer/">Customer List</a></li>
+    <li><a href="#">Customer Profile</a></li>
+  </ol>
+  <div class="row container"> 
+    <h3> Customer Details </h3> 
+    <dl class="dl-horizontal">
+      <dt>Name : </dt> <dd> {{currentCustomer.name || "N/A"}}</dd>
+      <dt>Email : </dt> <dd> {{currentCustomer.email || "N/A"}}</dd>
+      <dt>Phone : </dt> <dd> {{currentCustomer.phone}}</dd>
+      <dt>Address : </dt> <dd> {{currentCustomer.address?currentCustomer.address.title || "N/A" : "N/A"}}</dd>
+    </dl>
+    <button type="button" class="btn btn-danger btn-md" data-toggle="modal" ng-click="deleteCustomer(currentCustomer)">Delete Customer</button>
+    <a href="/company/profile/customer/{{currentCustomer._id}}/terms" type="button" class="btn btn-primary btn-md">View Terms</a>
+    <a href="/company/profile/customer/{{currentCustomer._id}}/logs" type="button" class="btn btn-primary btn-md">View Logs</a>
+    <div class="modal" id="bla"> </div>
+    <h3> Update Details </h3>
+
+    <form class="form" name="form" ng-submit="updateCustomer(form)" novalidate>
+
+      <div class="form-group">           
+        <label>Customer Name</label>
+        <input placeholder="{{currentCustomer.name}}" type="text" name="name" class="form-control" ng-model="updateThisCustomer.name"/>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-success': form.phone.$valid && submitted,
+      'has-error': form.phone.$invalid && submitted }">
+        <label>Customer Phone </label>
+        <input placeholder="{{currentCustomer.phone}}" type="text" phone="phone" class="form-control" ng-model="updateThisCustomer.phone"/>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-success': form.email.$valid && submitted,
+      'has-error': form.email.$invalid && submitted }">
+        <label>Customer Email</label>
+        <input placeholder="{{currentCustomer.email}}" type="email" name="email" class="form-control" ng-model="updateThisCustomer.email" mongoose-error/>
+        <p class="help-block" ng-show="form.owner_email.$error.email && submitted">
+        Doesn't look like a valid email.
+        </p>
+        <p class="help-block" ng-show="form.owner_email.$error.required && submitted">
+        What's your email address?
+        </p>
+        <p class="help-block" ng-show="form.owner_email.$error.mongoose">
+        {{ errors.email }}
+        </p>
+      </div>
+
+      <div class="form-group">           
+        <label>Address</label>
+        <input placeholder="{{currentCustomer.address.title}}" type="text" name="address_title" class="form-control" ng-model="updateThisCustomer.address.title"/>
+      </div>
+
+      <div class="form-group">           
+        <label>Lattitude</label>
+        <input placeholder="{{currentCustomer.address.coordinates.lattitude}}" type="text" name="address_coordinates_lattitude" class="form-control" ng-model="updateThisCustomer.address.coordinates.lattitude"/>
+      </div>
+
+      <div class="form-group">           
+        <label>Longitude</label>
+        <input placeholder="{{currentCustomer.address.coordinates.longitude}}" type="text" name="address_coordinates_longitude" class="form-control" ng-model="updateThisCustomer.address.coordinates.longitude"/>
+      </div>
+      <p class="help-block"> {{ message }} </p>
+      <button class="btn btn-lg btn-primary" type="submit">Update</button>
+    </form>
+  </div> 
+</div>

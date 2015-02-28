@@ -26,7 +26,6 @@ angular.module('moneyManagerApp')
         }).
         success(function(data) {
           $cookieStore.put('token', data.token);
-          $cookieStore.put('isAdmin', true);
           currentAdmin = Admin.get();
           deferred.resolve(data);
           return cb();

@@ -2,23 +2,29 @@
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
-var async = require('async');
+
+/*
+=====================
+   Required Models   
+=====================
+*/
 var Company = require('../company/company.model');
 var Agent = require('../agent/agent.model');
 var Customer = require('../customer/customer.model');
+var Committee = require('../committee/committee.model');
 
 /*
 ====================
   Helper Functions  
 ====================
 */
-
 var validationError = function(res, err) {
   return res.json(422, err);
 };
 function handleError(res, err) {
   return res.send(500, err);
 }
+
 /*
 ===========================
   Company related queries  
@@ -60,7 +66,6 @@ exports.update = function(req, res) {
   Agent related queries  
 =========================
 */
-
 // Get list of agents 
 exports.retrieve_agents = function(req, res) {
   Agent.find({company : req.company._id} , function(err, agents) {
@@ -70,14 +75,16 @@ exports.retrieve_agents = function(req, res) {
   });
 };
 
+// Get a single agent
 exports.retrieve_agent = function(req, res) {
   var agentId = req.params.id;
-  Agent.find({_id : agentId, company : req.company._id}, function(err, agent) {
+  Agent.findOne({_id : agentId, company : req.company._id}, function(err, agent) {
     if(err) { return handleError(res, err); }
     if(!agent) { res.json(agent); }
     else res.json(200, agent);
   });
 };
+
 // Create agent 
 exports.create_agent = function(req, res) {
   var toCreate = req.body;
@@ -118,7 +125,7 @@ exports.retrieve_customers = function(req, res) {
 // Retrieve a single customer 
 exports.retrieve_customer = function(req, res) {
   var customerId = req.params.id;
-  Customer.find({_id : customerId, company : req.company._id}, function(err, customer) {
+  Customer.findOne({_id : customerId, company : req.company._id}, function(err, customer) {
     if(err) { return handleError(res, err); }
     if(!customer) { res.json(customer); }
     else res.json(200, customer);
@@ -149,7 +156,7 @@ exports.update_customer = function(req, res) {
 exports.destroy_customer = function(req, res) {
   Customer.findOneAndRemove(req.params.id, function (err) {
     if(err) return validationError(res, err);
-    res.send(204);
+    res.send(204, {error : false, msg : "Deleted successfully! ", data : null});
   });
 };
 
@@ -164,6 +171,71 @@ exports.create_customer = function(req, res) {
   Customer.create(toCreate, function(err, customer) {
     if(err) { return handleError(res, err); }
     return res.json(201, {error : false, msg : "Customer added", obj : customer.profile}); 
+  });
+};
+
+/*
+============================
+  Committee related queries  
+============================
+*/
+
+// Get list of committees 
+exports.retrieve_committees = function(req, res) {
+  Committee.find({company : req.company._id}, function(err, committees) {
+    if(err) { return handleError(res, err); }
+    if(!committees) { return res.json(404, { error : true, msg : "Committees not found", data : []}); }
+    res.json(200, committees);
+  });
+};
+
+// Retrieve a single committee 
+exports.retrieve_committee = function(req, res) {
+  var committeeId = req.params.id;
+  Committee.findOne({_id : committeeId, company : req.company._id}, function(err, committee) {
+    if(err) { return handleError(res, err); }
+    if(!committee) { res.json(committee); }
+    else res.json(200, committee);
+  });
+};
+
+// Update a committee 
+exports.update_committee = function(req, res) {
+  var updatedCommittee = req.body;
+  Committee.findById(req.params.id, function (err, committee) {
+    if(err) return validationError(res, err);
+    if(!committee) res.json(401);
+    committee.title = updatedCommittee.title || committee.title || "";
+    committee.duration = updatedCommittee.duration || committee.duration;
+    committee.members = updatedCommittee.members || committee.members || [];
+    committee.visible_to = updatedCommittee.visible_to || committee.visible_to || [];
+    committee.logs = updatedCommittee.logs || committee.logs || [];
+    committee.save(function(err) {
+      if(err) return validationError(res, err);
+      res.send(200);
+    });
+  });
+};
+
+// Delete a committee 
+exports.destroy_committee = function(req, res) {
+  Committee.findOneAndRemove(req.params.id, function (err) {
+    if(err) return validationError(res, err);
+    res.send(204, {error : false, msg : "Deleted successfully! ", data : null});
+  });
+};
+
+// Create committee 
+exports.create_committee = function(req, res) {
+  var toCreate = req.body;
+  if(!toCreate || !toCreate.title) {
+    return res.json(403, { error : true, msg : "Committee's title is missing"});
+  }
+  var company = req.company;
+  toCreate.company = company._id;
+  Committee.create(toCreate, function(err, committee) {
+    if(err) { return handleError(res, err); }
+    return res.json(201, {error : false, msg : "Committee added", obj : committee.profile}); 
   });
 };
 

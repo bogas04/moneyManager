@@ -28,16 +28,13 @@ var CustomerSchema = new Schema({
       amount : Number,
       duration : {
         count :  Number,
-        parameter : {
-          type : String,
-          enum : ['days', 'months', 'years']
-        }
-     }
+        parameter : { type : String, enum : ['days', 'months', 'years']}
+      }
     },
-    logs : {
+    logs : [{
       date : Date,
       paid : Boolean    
-    }
+    }]
   }]
 });
 CustomerSchema.index ({phone : 1, company : 1}, {unique : true});
