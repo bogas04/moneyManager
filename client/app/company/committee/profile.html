@@ -15,10 +15,28 @@
       <dt>Start Date : </dt> <dd> {{stringifyDate(currentCommittee.start_date) || "N/A"}}</dd>
       <dt>Amount : </dt> <dd> {{currentCommittee.amount}}</dd>
       <dt>Duration : </dt> <dd> {{currentCommittee.duration.count + " " + currentCommittee.duration.parameter}} </dd>
+      <dt>Members : </dt> <dd> {{currentCommittee.length}} </dd>
     </dl>
     <button type="button" class="btn btn-danger btn-md" data-toggle="modal" ng-click="deleteCommittee(currentCommittee)">Delete Committee</button>
     <a href="/company/profile/committee/{{currentCommittee._id}}/logs" type="button" class="btn btn-primary btn-md">View Logs</a>
-    <a href="/company/profile/committee/{{currentCommittee._id}}/members" type="button" class="btn btn-primary btn-md">View Members</a>
+    <a href="/company/profile/committee/{{currentCommittee._id}}/update" type="button" class="btn btn-primary btn-md">Update</a>
+  
+    <h3> Members </h3>
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="m in currentCommittee.members">
+          <td>{{m.name}}</td>
+          <td>{{m.phone}}</td>
+        </tr>
+      </tbody>
+    </table>
+
     <div class="modal" id="bla"> </div>
     <h3> Update Details </h3>
 

@@ -192,7 +192,7 @@ exports.retrieve_committees = function(req, res) {
 // Retrieve a single committee 
 exports.retrieve_committee = function(req, res) {
   var committeeId = req.params.id;
-  Committee.findOne({_id : committeeId, company : req.company._id}, function(err, committee) {
+  Committee.findOne({_id : committeeId, company : req.company._id}).populate('members').exec(function(err, committee) {
     if(err) { return handleError(res, err); }
     if(!committee) { res.json(committee); }
     else res.json(200, committee);

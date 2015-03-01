@@ -9,11 +9,11 @@ angular.module('moneyManagerApp')
   $scope.currentCustomer = {};
   $scope.currentAgent = {};
   $scope.currentTerm = {};
-
+  $scope.createThisCommittee = {};
   /* 
    * Filling Scopes
    */
-  if($location.$$path.indexOf('/company/profile/customer/') > -1) {
+  if($location.path().indexOf('/company/profile/customer/') > -1) {
     $http.get('/api/company/customers/'+$routeParams.id)
       .success( function (data, status, headers, config) {
         console.log(data, status, headers, config);
@@ -28,14 +28,14 @@ angular.module('moneyManagerApp')
         }
       });
   }
-  if($location.$$path.indexOf('/company/profile/committee/') > -1) {
+  if($location.path().indexOf('/company/profile/committee/') > -1) {
     $http.get('/api/company/committees/'+$routeParams.committeeId)
       .success( function (data, status, headers, config) {
         console.log(data, status, headers, config);
         $scope.currentCommittee = data;
       });
   }
-  if($location.$$path === '/company/list/customer') {
+  if($location.path() === '/company/list/customer') {
     $http.get('/api/company/customers/')
       .success( function (data, status, headers, config) {
         $scope.customers = data;
@@ -46,14 +46,14 @@ angular.module('moneyManagerApp')
     });
   }
 
-  if($location.$$path.indexOf('/company/profile/agent/') > -1) {
+  if($location.path().indexOf('/company/profile/agent/') > -1) {
     $http.get('/api/company/agents/'+$routeParams.id)
       .success( function (data, status, headers, config) {
         $scope.currentAgent = data;
         console.log(data, status, headers, config);
       });
   }
-  if($location.$$path === '/company/list/agent') {
+  if($location.path() === '/company/list/agent') {
     $http.get('/api/company/agents/')
       .success( function (data, status, headers, config) {
         $scope.agents = data;
@@ -63,10 +63,20 @@ angular.module('moneyManagerApp')
       console.log(data, status, headers, config);
     });
   }
-  if($location.$$path === '/company/list/committee') {
+  if($location.path() === '/company/list/committee') {
     $http.get('/api/company/committees/')
       .success( function (data, status, headers, config) {
         $scope.committees = data;
+        console.log(data, status, headers, config);
+      })
+    .error( function (data, status, headers, config) {
+      console.log(data, status, headers, config);
+    });
+  }
+  if($location.path().indexOf('/company/create/committee') > -1) {
+    $http.get('/api/company/customers/')
+      .success( function (data, status, headers, config) {
+        $scope.customers = data;
         console.log(data, status, headers, config);
       })
     .error( function (data, status, headers, config) {
@@ -80,6 +90,7 @@ angular.module('moneyManagerApp')
 
   $scope.updateCommittee = function(form) {
     $scope.submitted = true;
+    console.log($scope.updateThisCommittee);
     if(form.$valid) {
       var newCommittee = $scope.updateThisCommittee;
       $http.put('/api/company/committees/'+$scope.currentCommittee._id, newCommittee)
@@ -106,6 +117,7 @@ angular.module('moneyManagerApp')
   };
   $scope.createCommittee = function(form) {
     $scope.submitted = true;
+    console.log($scope.createThisCommittee);
     if(form.$valid) {
       var newCommittee = $scope.createThisCommittee;
       newCommittee.start_date = $scope.toDate(newCommittee.start_date);
@@ -120,7 +132,7 @@ angular.module('moneyManagerApp')
     }
   };
 
-  
+
   /*
    * Term Functions
    */
@@ -260,7 +272,7 @@ angular.module('moneyManagerApp')
       });
     }
   };
-  
+
   /*
    * Agent Functions
    */
@@ -305,21 +317,15 @@ angular.module('moneyManagerApp')
   /*
    * Helper Functions
    */
-  $scope.addMember = function() {
-    if(!$scope.membersToAdd) $scope.membersToAdd = [];
-    $scope.membersToAdd.push({name : $scope.newMember, _id : 123 });
-    console.log($scope.membersToAdd);
-    $scope.newMember = '';
-  }
-  $scope.deleteMember = function(member) {
-    if(!$scope.membersToAdd) return;
-    for(var i = 0; i < $scope.membersToAdd.length; i++) {
-      if($scope.membersToAdd[i].name === member.name) {
-        $scope.membersToAdd.splice(i,1);
-        return;
-      }
+  $scope.toggleMember = function(member) {
+    if(!$scope.createThisCommittee.members) $scope.createThisCommittee.members = [];
+    var index = $scope.createThisCommittee.members.indexOf(member);
+    if(index > -1) {
+      $scope.createThisCommittee.members.splice(index,1);
+    } else {  
+      $scope.createThisCommittee.members.push(member);
     }
-    console.log($scope.membersToAdd);
+    console.log($scope.createThisCommittee.members);
   }
   $scope.toDate = function (str) {
     // Return date object a dd/mm/yyyy string
