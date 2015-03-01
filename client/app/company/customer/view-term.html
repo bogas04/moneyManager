@@ -24,15 +24,15 @@ $('.input-group.date').datepicker({
     <dl class="dl-horizontal">
       <dt>Title : </dt> <dd> {{currentTerm.title || "N/A"}}</dd>
       <dt>Start Date : </dt> <dd> {{stringifyDate(currentTerm.start_date)}}</dd>
+      <dt>Amount : </dt> <dd> {{currentTerm.amount}}</dd>
       <dt>Installments : </dt> <dd> {{currentTerm.installments.count || "N/A"}}</dd>
-      <dt>Installment Amount : </dt> <dd> {{currentTerm.installments.amount || "N/A"}}</dd>
       <dt>Installment Duration : </dt> <dd> {{currentTerm.installments.duration.count + " " + currentTerm.installments.duration.parameter}} </dd>
-      <dt>Interest Rate : </dt> <dd> {{currentTerm.interest.rate || "N/A"}}</dd>
-      <dt>Interest Type : </dt> <dd> {{currentTerm.interest.type || "N/A"}}</dd>
+      <dt>Interest Rate : </dt> <dd> {{currentTerm.interest.rate + " % " || "N/A"}}</dd>
+      <dt>Interest Type : </dt> <dd> {{capInit(currentTerm.interest.type) || "N/A"}}</dd>
     </dl>
     <button type="button" class="btn btn-danger btn-md" data-toggle="modal" ng-click="deleteTerm(currentTerm.title)">Delete Term</button>
     <a href="/company/profile/customer/{{currentCustomer._id}}/terms/{{currentTerm.title}}/logs" type="button" class="btn btn-primary btn-md">View Logs</a>
-
+<!--
     <h3> Update Details </h3>
     <form class="form" name="form" ng-submit="updateTerm(form)" novalidate>
       <div class="form-group">           
@@ -69,6 +69,6 @@ $('.input-group.date').datepicker({
       </div>
       <p class="help-block"> {{ message }} </p>
       <button class="btn btn-lg btn-primary" type="submit">Update</button>
-    </form>
+      </form> -->
   </div> 
 </div>

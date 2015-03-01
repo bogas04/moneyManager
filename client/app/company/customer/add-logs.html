@@ -27,10 +27,25 @@ $('.input-group.date').datepicker({
       <div class="form-group">           
         <label>Log Date</label>
         <div class="input-group date">
-          <input type="text" class="form-control" ng-model="addThisLog.date" placeholder="Enter start date of this log" ><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span> 
+          <input type="text" class="form-control" ng-model="addThisLog.date" placeholder="Enter date of this log" >
+        </div>       
+      </div>
+      <div class="form-group">           
+        <label>Log Type</label>
+        <select class="form-control" name="addThisLog.type" ng-model="addThisLog.type" required>
+          <option value="credit"> Credit </option>
+          <option value="debit"> Debit </option>
+        </select>
+      </div>
+      <div class="form-group">           
+        <label>Log Amount</label>
+        <div class="input-group">
+          <span class="input-group-addon">₹</span>
+          <input type="number" class="form-control" ng-model="addThisLog.amount" placeholder="Amount Paid/Given" />
         </div>       
       </div>
       <p class="help-block"> {{ message }} </p>
       <button class="btn btn-lg btn-primary" type="submit">Add</button>
     </form>
-</div>
+  </div>

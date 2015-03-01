@@ -29,7 +29,7 @@ var CustomerSchema = new Schema({
       count : Number,
       duration : {
         count :  Number,
-        parameter : { type : String, enum : ['months', 'years']}
+        parameter : { type : String, enum : ['days', 'months', 'years']}
       }
     },
     logs : [{

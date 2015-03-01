@@ -21,7 +21,7 @@ $('.input-group.date').datepicker({
   </ol>
   <div class="row container"> 
     <h3> Add Term Details </h3>
-    <form class="form" name="form" ng-submit="createTerm(form)" novalidate>
+    <form class="form" name="form" ng-submit="addTerm(form)" novalidate>
       <div class="form-group">           
         <label>Term Name</label>
         <input placeholder="Enter your Term Name" type="text" name="name" class="form-control" ng-model="addThisTerm.title" required/>
@@ -29,33 +29,45 @@ $('.input-group.date').datepicker({
       <div class="form-group">           
         <label>Term Start Date</label>
         <div class="input-group date">
-          <input type="text" class="form-control" ng-model="addThisTerm.start_date" placeholder="Enter start date of this term" ><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+          <input type="text" class="form-control" ng-model="addThisTerm.start_date" placeholder="Enter start date of this term" >
         </div>       
       </div>
-      <div class="form-group form-inline">           
+      <div class="form-group">           
+        <label>Term Amount</label>
+        <div class="input-group">
+          <span class="input-group-addon">₹</span>
+          <input type="number" class="form-control" ng-model="addThisTerm.amount" placeholder="Enter amount of this term" />
+        </div>       
+      </div>
+
+      <div class="form-group">
         <label>Interest Rate</label>
-        <input placeholder="Enter your Interest Rate" type="text" name="interest.rate" class="form-control" ng-model="addThisTerm.interest.rate" />
+        <div class="input-group">
+          <span class="input-group-addon">@</span>
+          <input placeholder=" Interest Rate" type="text" name="interest.rate" class="form-control" ng-model="addThisTerm.interest.rate" />
+        </div>
+      </div>
+      <div class="form-group">
         <label>Interest Type</label>
         <select name="interest.type" class="form-control" ng-model="addThisTerm.interest.type">
           <option value="simple"> Simple </option>
           <option value="compound"> Compound  </option>
         </select>
       </div>
-      <div class="form-group form-inline">           
-        <label>Installment Amount</label>
-        <input placeholder="Enter your Installment Amount" type="text" name="installments.amount" class="form-control" ng-model="addThisTerm.installments.amount" required/>
-      </div>
       <div class="form-group form-inline">
-        <label>Installment Duration</label>
-        <input placeholder="Enter your Installment Duration" type="text" name="installments.duration.count" class="form-control" ng-model="addThisTerm.installments.duration.count" required/>
+        <label>Number of Installments</label>
+        <input placeholder="No. of Installments" type="text" name="installments.count" class="form-control" ng-model="addThisTerm.installments.count" required/>
+        <label>Term Installment Duration</label>
+        <input placeholder=" Installment Duration" type="text" name="installments.duration.count" class="form-control" ng-model="addThisTerm.installments.duration.count" required/>
         <select  name="installments.duration.parameter" ng-model="addThisTerm.installments.duration.parameter" class="form-control">
           <option value="days"> Days </option>
-          <option value="months"> Month </option>
+          <option value="months"> Months </option>
           <option value="years"> Years </option>
         </select>
       </div>
       <p class="help-block"> {{ message }} </p>
-      <button class="btn btn-lg btn-primary" type="submit">Update</button>
+      <button class="btn btn-lg btn-primary" type="submit">Add</button>
     </form>
   </div> 
 </div>

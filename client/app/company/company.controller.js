@@ -15,7 +15,9 @@ angular.module('moneyManagerApp')
   $scope.currentCustomer = {};
   $scope.currentAgent = {};
   $scope.currentTerm = {};
-  $scope.createThisCommittee = {};
+  $scope.createThisCommittee = { duration : { parameter : 'months' } };
+  $scope.addThisTerm = { interest : { type : 'simple'}, installments : { duration : { parameter : 'months' }}};
+  $scope.addThisLog = { type  : 'credit' };
   /* 
    * Filling Scopes
    */
@@ -227,7 +229,8 @@ angular.module('moneyManagerApp')
   $scope.addLog = function(form) {
     $scope.submitted = true;
     if(form.$valid) {
-      $scope.currentTerm.logs.push({ date : $scope.toDate($scope.addThisLog.date), paid : true });
+      $scope.addThisLog.date = $scope.toDate($scope.addThisLog.date);
+      $scope.currentTerm.logs.push($scope.addThisLog);
       for(var i = 0; i < $scope.currentCustomer.terms.length; i++) {
         if($scope.currentCustomer.terms[i].title === $scope.currentTerm.title) {
           $scope.currentCustomer.terms[i] = $scope.currentTerm;
@@ -240,6 +243,28 @@ angular.module('moneyManagerApp')
             console.log(data, status, headers, config);
           });
         }
+      } 
+    } 
+  }; 
+  $scope.deleteLog = function(log) {
+    for(var i = 0; i < $scope.currentTerm.logs.length; i++) {
+      if($scope.currentTerm.logs[i].date === log.date &&
+          $scope.currentTerm.logs[i].amount === log.amount &&
+          $scope.currentTerm.logs[i].type === log.type) {
+        $scope.currentTerm.logs.splice(i, 1);
+        for(var i = 0; i < $scope.currentCustomer.terms.length; i++) {
+          if($scope.currentCustomer.terms[i].title === $scope.currentTerm.title) {
+            $scope.currentCustomer.terms[i] = $scope.currentTerm;
+            $http.put('/api/company/customers/'+$routeParams.id, $scope.currentCustomer)
+              .success( function (data, status, headers, config) {
+                console.log(data, status, headers, config);
+                $location.path('company/profile/customer/'+$scope.currentCustomer._id+'/terms/'+$scope.currentTerm.title+'/logs');
+              })
+            .error( function (data, status, headers, config){
+              console.log(data, status, headers, config);
+            });
+          }
+        } 
       } 
     } 
   }; 
@@ -329,15 +354,28 @@ angular.module('moneyManagerApp')
   /*
    * Helper Functions
    */
-  $scope.toggleMember = function(member) {
-    if(!$scope.createThisCommittee.members) $scope.createThisCommittee.members = [];
-    var index = $scope.createThisCommittee.members.indexOf(member);
-    if(index > -1) {
-      $scope.createThisCommittee.members.splice(index,1);
-    } else {  
-      $scope.createThisCommittee.members.push(member);
+  $scope.capInit = function (str) { return (!str) ? "": str[0].toUpperCase() + str.slice(1); }; 
+  $scope.creditOrDebit = function(str) { console.log("called"); return str == 'credit'? 'danger' : 'success'; } 
+  $scope.computeBalance = function (term) {
+    var balance = 0;
+    for(var i = 0; i < term.logs.length; i++) {
+      if(term.logs[i].type === 'credit') {
+        balance -= term.logs[i].amount;
+      } else {
+        balance += term.logs[i].amount;
+      }
     }
-    console.log($scope.createThisCommittee.members);
+    return balance;
+  };
+  $scope.toggleMember = function(member) {
+    if(!$scope.createThisCommittee.members.list) $scope.createThisCommittee.members.list = [];
+    var index = $scope.createThisCommittee.members.list.indexOf(member);
+    if(index > -1) {
+      $scope.createThisCommittee.members.list.splice(index,1);
+    } else {  
+      $scope.createThisCommittee.members.list.push(member);
+    }
+    console.log($scope.createThisCommittee.members.list);
   }
   $scope.toDate = function (str) {
     // Return date object a dd/mm/yyyy string

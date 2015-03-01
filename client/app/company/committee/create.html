@@ -28,7 +28,7 @@ $('.input-group.date').datepicker({
       <div class="form-group">           
         <label>Start Date</label>
         <div class="input-group date">
-          <input type="text" class="form-control" ng-model="createThisCommittee.start_date" placeholder="Enter start date of this committee" required/><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span><input type="text" class="form-control" ng-model="createThisCommittee.start_date" placeholder="Enter start date of this committee" required/>
         </div>       
       </div>
 
@@ -36,7 +36,7 @@ $('.input-group.date').datepicker({
         <label>Amount </label>
         <div class="input-group">
           <div class="input-group-addon">₹</div>
-          <input placeholder="Enter your Amount" type="text" name="title" class="form-control" ng-model="createThisCommittee.amount" required/>
+          <input placeholder="Enter your Amount" type="text" name="amount" class="form-control" ng-model="createThisCommittee.amount" required/>
         </div>
       </div>
 
@@ -44,12 +44,20 @@ $('.input-group.date').datepicker({
         <label>Duration</label>
         <input placeholder="Enter your Duration Count" type="text" name="duration.count" class="form-control" ng-model="createThisCommittee.duration.count"/>
         <select  name="duration.parameter" ng-model="createThisCommittee.duration.parameter" class="form-control">
-          <option value="months"> Month </option>
+          <option value="months"> Months </option>
           <option value="years"> Years </option>
         </select>
       </div>
 
-      <h4> Select the Members from your current customers ({{customers.length}}) </h4>
+      <div class="form-group">           
+        <label>Number of Members </label>
+        <div class="input-group">
+          <div class="input-group-addon">#</div>
+          <input placeholder="No. of Members" type="text" name="member.count" class="form-control" ng-model="createThisCommittee.members.count" required/>
+        </div>
+      </div>
+
+      <h4> Select the {{createThisCommittee.members.count - createThisCommittee.members.list.length}} Members from your current customers ({{customers.length}}) </h4>
       <div class="form-group member-list">
         <div ng-repeat="cus in customers">
           <div class="checkbox">

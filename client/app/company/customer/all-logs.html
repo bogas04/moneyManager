@@ -15,14 +15,16 @@
         <tr>
           <th>Term</th>
           <th>Date</th>
-          <th>Paid</th>
+          <th>Type</th>
+          <th>Amount</th>
         </tr>
       </thead>
       <tbody ng-repeat="t in currentCustomer.terms">
         <tr ng-repeat="l in t.logs">
           <td><a href="/company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}/">{{t.title}}</a></td>
           <td>{{stringifyDate(l.date)}}</td>
-          <td>{{l.paid}}</td>
+          <td>{{capInit(l.type)}}</td>
+          <td>{{l.amount}}</td>
         </tr>
       </tbody>
     </table>

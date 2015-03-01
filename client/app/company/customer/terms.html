@@ -16,18 +16,24 @@
         <tr>
           <th>Term Name</th>
           <th>Start Date</th>
-          <th>Interest Type</th>
+          <th>Amount</th>
+          <th>Interest</th>
           <th># Installments</th>
-          <th># Payments</th>
+          <th>Current Balance</th>
+          <th>Next Due Date</th>
+          <th>Next Due Amount</th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="t in currentCustomer.terms"> 
           <td><a href="company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}">{{t.title}}</a></td>
           <td>{{stringifyDate(t.start_date)}}</td>
-          <td>{{t.interest.type || "N/A"}} {{ t.interest.rate?"@" + t.interest.rate: ""}}</td>
-          <td>{{t.installments.duration.count + " " + t.installments.duration.type}}</td>
-          <td>{{t.logs.length}}</td>
+          <td> {{t.amount}}</td>
+          <td>{{capInit(t.interest.type) || "N/A"}} {{ t.interest.rate?" @ " + t.interest.rate + " %": ""}}</td>
+          <td>{{t.installments.count + " / "+ t.installments.duration.count + " " + t.installments.duration.parameter}}</td>
+          <td>₹ {{computeBalance(t)}}</td>
+          <td>Due Date</td>
+          <td>₹ Next Due Amount</td>
         </tr>
       </tbody>
     </table>

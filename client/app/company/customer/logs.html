@@ -17,13 +17,17 @@
       <thead>
         <tr>
           <th>Date</th>
-          <th>Paid</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Operation</th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="t in currentTerm.logs"> 
           <td>{{stringifyDate(t.date)}}</td>
-          <td>{{t.paid}}</td>
+          <td>{{capInit(t.type)}}</td>
+          <td>₹ {{t.amount}}</td>
+          <td><button class="btn btn-xs btn-danger" ng-click="deleteLog(t)">&times; Delete This Log</button></td>
         </tr>
       </tbody>
     </table>
