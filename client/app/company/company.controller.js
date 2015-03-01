@@ -2,6 +2,12 @@
 
 angular.module('moneyManagerApp')
 .controller('CompanyCtrl', function ($routeParams, $scope, $location, $http, AuthCompany, Company) {
+  AuthCompany.isLoggedInAsync(function (loggedIn) {
+    if(!loggedIn) {
+      AuthCompany.logout();
+      $location.path('/');
+    }
+  });
   $scope.message = '';
   $scope.company = Company.get();
   $scope.customers = [];
@@ -13,6 +19,7 @@ angular.module('moneyManagerApp')
   /* 
    * Filling Scopes
    */
+  // Customer Profile
   if($location.path().indexOf('/company/profile/customer/') > -1) {
     $http.get('/api/company/customers/'+$routeParams.id)
       .success( function (data, status, headers, config) {
@@ -28,13 +35,7 @@ angular.module('moneyManagerApp')
         }
       });
   }
-  if($location.path().indexOf('/company/profile/committee/') > -1) {
-    $http.get('/api/company/committees/'+$routeParams.committeeId)
-      .success( function (data, status, headers, config) {
-        console.log(data, status, headers, config);
-        $scope.currentCommittee = data;
-      });
-  }
+  // Customer List
   if($location.path() === '/company/list/customer') {
     $http.get('/api/company/customers/')
       .success( function (data, status, headers, config) {
@@ -45,7 +46,7 @@ angular.module('moneyManagerApp')
       console.log(data, status, headers, config);
     });
   }
-
+  // Agent Profile
   if($location.path().indexOf('/company/profile/agent/') > -1) {
     $http.get('/api/company/agents/'+$routeParams.id)
       .success( function (data, status, headers, config) {
@@ -53,6 +54,7 @@ angular.module('moneyManagerApp')
         console.log(data, status, headers, config);
       });
   }
+  // Agent List
   if($location.path() === '/company/list/agent') {
     $http.get('/api/company/agents/')
       .success( function (data, status, headers, config) {
@@ -63,6 +65,15 @@ angular.module('moneyManagerApp')
       console.log(data, status, headers, config);
     });
   }
+  // Committee Profile
+  if($location.path().indexOf('/company/profile/committee/') > -1) {
+    $http.get('/api/company/committees/'+$routeParams.committeeId)
+      .success( function (data, status, headers, config) {
+        console.log(data, status, headers, config);
+        $scope.currentCommittee = data;
+      });
+  }
+  // Committee List
   if($location.path() === '/company/list/committee') {
     $http.get('/api/company/committees/')
       .success( function (data, status, headers, config) {
@@ -73,6 +84,7 @@ angular.module('moneyManagerApp')
       console.log(data, status, headers, config);
     });
   }
+  // Committee Create
   if($location.path().indexOf('/company/create/committee') > -1) {
     $http.get('/api/company/customers/')
       .success( function (data, status, headers, config) {

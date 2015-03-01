@@ -2,6 +2,12 @@
 
 angular.module('moneyManagerApp')
   .controller('AdminCtrl', function ($scope, $location, $http, Auth, Admin) {
+    Auth.isLoggedInAsync(function (loggedIn) {
+      if(!loggedIn) {
+        Auth.logout();
+        $location.path('/');
+      }
+    });
     $scope.message = '';
     $scope.admin = Admin.get();
     if(Auth.isSuper) {

@@ -31,9 +31,9 @@ angular.module('moneyManagerApp')
           return cb();
         }).
         error(function(err) {
-          this.logout();
+          // this.logout();
           deferred.reject(err);
-          return cb(err);
+          return cb(err, this.logout);
         }.bind(this));
 
         return deferred.promise;

@@ -20,20 +20,22 @@ var CustomerSchema = new Schema({
   terms : [{
     title : String,
     start_date : Date,
+    amount : Number,
     interest : {
       rate :  Number,
       type : { type : String , enum : ['simple', 'compound'] }
     },
     installments : {
-      amount : Number,
+      count : Number,
       duration : {
         count :  Number,
-        parameter : { type : String, enum : ['days', 'months', 'years']}
+        parameter : { type : String, enum : ['months', 'years']}
       }
     },
     logs : [{
       date : Date,
-      paid : Boolean    
+      type : { type : String, enum : ['credit', 'debit'] },
+      amount : Number  
     }]
   }]
 });

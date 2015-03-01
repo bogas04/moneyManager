@@ -31,7 +31,7 @@
       </thead>
       <tbody>
         <tr ng-repeat="m in currentCommittee.members">
-          <td>{{m.name}}</td>
+          <td><a href="/company/profile/customer/{{m._id}}/">{{m.name}}</a></td>
           <td>{{m.phone}}</td>
         </tr>
       </tbody>
