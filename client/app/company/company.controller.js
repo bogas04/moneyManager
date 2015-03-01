@@ -159,7 +159,7 @@ angular.module('moneyManagerApp')
       var updatedCustomer = $scope.currentCustomer;
       for(var i = 0; i < updatedCustomer.terms.length; i++) {
         if(updatedCustomer.terms[i].title !== newTerm.title) {
-          alert("This term doesn't exist!");
+          alert('This term doesn\'t exist!');
           $location.path('company/profile/customer/'+$scope.currentCustomer._id+'/terms');
           return;
         }
@@ -193,7 +193,7 @@ angular.module('moneyManagerApp')
         return;
       }
     }
-    alert("Term not found!");
+    alert('Term not found!');
   };
   $scope.addTerm = function(form) {
     $scope.submitted = true;
@@ -205,7 +205,7 @@ angular.module('moneyManagerApp')
       var updatedCustomer = $scope.currentCustomer;
       for(var i = 0; i < updatedCustomer.terms.length; i++) {
         if(updatedCustomer.terms[i].title === newTerm.title) {
-          alert("This term already exists! Choose different name");
+          alert('This term already exists! Choose different name');
           $location.path('company/profile/customer/'+$scope.currentCustomer._id+'/terms');
           return;
         }
@@ -252,7 +252,7 @@ angular.module('moneyManagerApp')
           $scope.currentTerm.logs[i].amount === log.amount &&
           $scope.currentTerm.logs[i].type === log.type) {
         $scope.currentTerm.logs.splice(i, 1);
-        for(var i = 0; i < $scope.currentCustomer.terms.length; i++) {
+        for(i = 0; i < $scope.currentCustomer.terms.length; i++) {
           if($scope.currentCustomer.terms[i].title === $scope.currentTerm.title) {
             $scope.currentCustomer.terms[i] = $scope.currentTerm;
             $http.put('/api/company/customers/'+$routeParams.id, $scope.currentCustomer)
@@ -263,6 +263,7 @@ angular.module('moneyManagerApp')
             .error( function (data, status, headers, config){
               console.log(data, status, headers, config);
             });
+            return;
           }
         } 
       } 
@@ -354,8 +355,8 @@ angular.module('moneyManagerApp')
   /*
    * Helper Functions
    */
-  $scope.capInit = function (str) { return (!str) ? "": str[0].toUpperCase() + str.slice(1); }; 
-  $scope.creditOrDebit = function(str) { console.log("called"); return str == 'credit'? 'danger' : 'success'; } 
+  $scope.capInit = function (str) { return (!str) ? '': str[0].toUpperCase() + str.slice(1); }; 
+  $scope.creditOrDebit = function(str) { console.log('called'); return str === 'credit'? 'danger' : 'success'; };
   $scope.computeBalance = function (term) {
     var balance = 0;
     for(var i = 0; i < term.logs.length; i++) {
@@ -368,7 +369,9 @@ angular.module('moneyManagerApp')
     return balance;
   };
   $scope.toggleMember = function(member) {
-    if(!$scope.createThisCommittee.members.list) $scope.createThisCommittee.members.list = [];
+    if(!$scope.createThisCommittee.members.list) {
+      $scope.createThisCommittee.members.list = [];
+    }
     var index = $scope.createThisCommittee.members.list.indexOf(member);
     if(index > -1) {
       $scope.createThisCommittee.members.list.splice(index,1);
@@ -376,7 +379,7 @@ angular.module('moneyManagerApp')
       $scope.createThisCommittee.members.list.push(member);
     }
     console.log($scope.createThisCommittee.members.list);
-  }
+  };
   $scope.toDate = function (str) {
     // Return date object a dd/mm/yyyy string
     var d = str.split('/');
