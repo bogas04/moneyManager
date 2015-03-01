@@ -12,6 +12,7 @@ var CommitteeSchema = new Schema({
   start_date : Date,
   title : { type : String, unique : true },
   company : { type : Schema.Types.ObjectId, ref : 'Company'},
+  amount : Number,
   duration : {
     count : Number,
     parameter : {

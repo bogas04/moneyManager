@@ -28,6 +28,13 @@ angular.module('moneyManagerApp')
         }
       });
   }
+  if($location.$$path.indexOf('/company/profile/committee/') > -1) {
+    $http.get('/api/company/committees/'+$routeParams.committeeId)
+      .success( function (data, status, headers, config) {
+        console.log(data, status, headers, config);
+        $scope.currentCommittee = data;
+      });
+  }
   if($location.$$path === '/company/list/customer') {
     $http.get('/api/company/customers/')
       .success( function (data, status, headers, config) {
@@ -56,6 +63,63 @@ angular.module('moneyManagerApp')
       console.log(data, status, headers, config);
     });
   }
+  if($location.$$path === '/company/list/committee') {
+    $http.get('/api/company/committees/')
+      .success( function (data, status, headers, config) {
+        $scope.committees = data;
+        console.log(data, status, headers, config);
+      })
+    .error( function (data, status, headers, config) {
+      console.log(data, status, headers, config);
+    });
+  }
+
+  /*
+   * Committee Functions
+   */
+
+  $scope.updateCommittee = function(form) {
+    $scope.submitted = true;
+    if(form.$valid) {
+      var newCommittee = $scope.updateThisCommittee;
+      $http.put('/api/company/committees/'+$scope.currentCommittee._id, newCommittee)
+        .success( function (data, status, headers, config){
+          $location.path('company/list/committee');
+          console.log(data, status, headers, config);
+        })
+      .error( function (data, status, headers, config){
+        console.log(data, status, headers, config);
+      });
+    }
+  };
+  $scope.deleteCommittee = function(committeeName) {
+    console.log(committeeName);
+    $http.delete('/api/company/committees/'+$routeParams.id)
+      .success( function (data, status, headers, config){
+        $location.path('company/list/committee/');
+        console.log(data, status, headers, config);
+      })
+    .error( function (data, status, headers, config){
+      console.log(data, status, headers, config);
+    });
+    return;
+  };
+  $scope.createCommittee = function(form) {
+    $scope.submitted = true;
+    if(form.$valid) {
+      var newCommittee = $scope.createThisCommittee;
+      newCommittee.start_date = $scope.toDate(newCommittee.start_date);
+      $http.post('/api/company/committees', newCommittee)
+        .success( function (data, status, headers, config){
+          $location.path('company/list/committee');
+          console.log(data, status, headers, config);
+        })
+      .error( function (data, status, headers, config){
+        console.log(data, status, headers, config);
+      });
+    }
+  };
+
   
   /*
    * Term Functions
@@ -241,6 +305,22 @@ angular.module('moneyManagerApp')
   /*
    * Helper Functions
    */
+  $scope.addMember = function() {
+    if(!$scope.membersToAdd) $scope.membersToAdd = [];
+    $scope.membersToAdd.push({name : $scope.newMember, _id : 123 });
+    console.log($scope.membersToAdd);
+    $scope.newMember = '';
+  }
+  $scope.deleteMember = function(member) {
+    if(!$scope.membersToAdd) return;
+    for(var i = 0; i < $scope.membersToAdd.length; i++) {
+      if($scope.membersToAdd[i].name === member.name) {
+        $scope.membersToAdd.splice(i,1);
+        return;
+      }
+    }
+    console.log($scope.membersToAdd);
+  }
   $scope.toDate = function (str) {
     // Return date object a dd/mm/yyyy string
     var d = str.split('/');

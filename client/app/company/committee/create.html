@@ -1,60 +1,63 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
+<script>
+$('.input-group.date').datepicker({
+  format: "dd/mm/yyyy",
+  todayBtn: "linked",
+  orientation: "bottom auto",
+  autoclose: true,
+  todayHighlight: true
+});
+</script>
 <div class="container">
   <div class="page-header">
-    <h1>Create Customer</h1>
+    <h1>Create Committee</h1>
   </div>
   <ol class="breadcrumb">  
     <li><a href="company">Home</a></li>
-    <li><a href="#">Create Customer</a></li>
+    <li><a href="#">Create Committee</a></li>
   </ol>
   <div class="row container"> 
-    <h3> Customer Details </h3> 
-    <form class="form" name="form" ng-submit="createCustomer(form)" novalidate>
+    <h3> Committee Details </h3> 
+    <form class="form" name="form" ng-submit="createCommittee(form)" novalidate>
 
       <div class="form-group">           
-        <label>Customer Name</label>
-        <input placeholder="Enter your Customer Name" type="text" name="name" class="form-control" ng-model="createThisCustomer.name"/>
-      </div>
-
-      <div class="form-group" ng-class="{ 'has-success': form.phone.$valid && submitted,
-                                          'has-error': form.phone.$invalid && submitted }">
-        <label>Customer Phone </label>
-        <input placeholder="Enter your Customer Phone" type="text" phone="phone" class="form-control" ng-model="createThisCustomer.phone"
-               required/>
-        <p class="help-block" ng-show="form.phone.$error.required && submitted">
-          A phone number is required
-        </p>
-      </div>
-
-      <div class="form-group" ng-class="{ 'has-success': form.email.$valid && submitted,
-                                          'has-error': form.email.$invalid && submitted }">
-        <label>Customer Email</label>
-        <input placeholder="Enter your Customer Email" type="email" name="owner_email" class="form-control" ng-model="createThisCustomer.email" mongoose-error/>
-        <p class="help-block" ng-show="form.owner_email.$error.email && submitted">
-          Doesn't look like a valid email.
-        </p>
-        <p class="help-block" ng-show="form.owner_email.$error.required && submitted">
-          What's your email address?
-        </p>
-        <p class="help-block" ng-show="form.owner_email.$error.mongoose">
-          {{ errors.email }}
-        </p>
+        <label>Committee Title</label>
+        <input placeholder="Enter your Committee Title" type="text" name="title" class="form-control" ng-model="createThisCommittee.title" required/>
       </div>
 
       <div class="form-group">           
-        <label>Address</label>
-        <input placeholder="Enter your Address" type="text" address.title="address.title" class="form-control" ng-model="createThisCustomer.address.title"/>
+        <label>Start Date</label>
+        <div class="input-group date">
+          <input type="text" class="form-control" ng-model="createThisCommittee.start_date" placeholder="Enter start date of this committee" required/><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+        </div>       
+      </div>
+
+      <div class="form-group">           
+        <label>Amount </label>
+        <input placeholder="Enter your Amount" type="text" name="title" class="form-control" ng-model="createThisCommittee.amount" required/>
+      </div>
+
+      <div class="form-group form-inline">           
+        <label>Duration</label>
+        <input placeholder="Enter your Duration Count" type="text" name="duration.count" class="form-control" ng-model="createThisCommittee.duration.count"/>
+        <select  name="duration.parameter" ng-model="createThisCommittee.duration.parameter" class="form-control">
+          <option value="months"> Month </option>
+          <option value="years"> Years </option>
+        </select>
       </div>
       
-      <div class="form-group">           
-        <label>Lattitude</label>
-        <input placeholder="Enter your Address" type="text" address.coordinates.lattitude="address.coordinates.lattitude" class="form-control" ng-model="createThisCustomer.address.coordinates.lattitude"/>
-      </div>
-      
-      <div class="form-group">           
-        <label>Longitude</label>
-        <input placeholder="Enter your Address" type="text" address.coordinates.longitude="address.coordinates.longitude" class="form-control" ng-model="createThisCustomer.address.coordinates.longitude"/>
-      </div>
+      <h4> Add Members </h4>
+      <div class="form-group">
+        <ul>
+          <li ng-repeat="member in membersToAdd">
+            <a href="/company/profile/customer/{{member._id}}">{{member.name}}</a> <button class="btn btn-danger btn-xs" ng-click="deleteMember(member)">&times;</button>
+          </li>
+        </ul>
+        <div class="form-inline">
+          <input placeholder="Enter Customer Id" type="text" class="form-control" ng-model="newMember"/>
+          <button class="btn btn-warning btn-md" ng-click="addMember()"> Add Member</button>
+        </div>
+      </div>      
       <p class="help-block"> {{ message }} </p>
       <button class="btn btn-lg btn-primary" type="submit">Create</button>
     </form>
