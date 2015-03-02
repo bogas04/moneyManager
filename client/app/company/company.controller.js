@@ -15,7 +15,8 @@ angular.module('moneyManagerApp')
   $scope.currentCustomer = {};
   $scope.currentAgent = {};
   $scope.currentTerm = {};
-  $scope.createThisCommittee = { duration : { parameter : 'months' } };
+  $scope.memberCount = [];
+  $scope.createThisCommittee = { duration : { parameter : 'months' }, members : { list : [], count : 0 } };
   $scope.addThisTerm = { interest : { type : 'simple'}, installments : { duration : { parameter : 'months' }}};
   $scope.addThisLog = { type  : 'credit' };
   /* 
@@ -71,8 +72,14 @@ angular.module('moneyManagerApp')
   if($location.path().indexOf('/company/profile/committee/') > -1) {
     $http.get('/api/company/committees/'+$routeParams.committeeId)
       .success( function (data, status, headers, config) {
-        console.log(data, status, headers, config);
         $scope.currentCommittee = data;
+        if($location.path().indexOf('/logs/add') > -1) {
+          $scope.addThisCommitteeLog = { bidAmount : data.amount / data.duration.count } ;
+          $scope.committeeLogOfAmount = [];
+          for(var i = 0; i < data.members.list.length; i++) {
+            $scope.committeeLogOfAmount[data.members.list[i].details._id] = $scope.addThisCommitteeLog.bidAmount;
+          }
+        }
       });
   }
   // Committee List
@@ -91,13 +98,15 @@ angular.module('moneyManagerApp')
     $http.get('/api/company/customers/')
       .success( function (data, status, headers, config) {
         $scope.customers = data;
+        for(var i = 0; i < data.length; i++) {
+          $scope.memberCount[data[i]._id] = 0;
+        }
         console.log(data, status, headers, config);
       })
     .error( function (data, status, headers, config) {
       console.log(data, status, headers, config);
     });
   }
-
   /*
    * Committee Functions
    */
@@ -145,7 +154,17 @@ angular.module('moneyManagerApp')
       });
     }
   };
-
+  $scope.addCommitteeLog = function(form) {
+    $scope.submitted = true;
+    if(form.$valid) {
+      var logDetails = $scope.addThisCommitteeLog;
+      logDetails.date = $scope.toDate(logDetails.date);
+      // for each customer, add the amount paid to their debit
+      // for the person who takes the amount, add the net amount to their credit
+      // save these customers 
+      // save the log  
+    }
+  }
 
   /*
    * Term Functions
@@ -367,16 +386,39 @@ angular.module('moneyManagerApp')
       }
     }
     return balance;
+  }; 
+  $scope.getMemberIndex = function (member) {
+    var index = -1;
+    for(var i = 0;i < $scope.createThisCommittee.members.list.length; i++) {
+      if($scope.createThisCommittee.members.list[i].details === member) {
+        index = i;
+        break;
+      }
+    }
+    return index;
+  };
+  $scope.getRemainingMemberCount = function() {
+    return $scope.createThisCommittee.members.count - $scope.getMemberCount();
+  };
+  $scope.getMemberCount = function() {
+    var sum = 0;
+    for(var i in $scope.memberCount) {
+      sum += $scope.memberCount[i];
+    }
+    return sum;
   };
   $scope.toggleMember = function(member) {
-    if(!$scope.createThisCommittee.members.list) {
-      $scope.createThisCommittee.members.list = [];
+    if($scope.createThisCommittee.members.count == 0) {
+      return;
     }
-    var index = $scope.createThisCommittee.members.list.indexOf(member);
+    var index = $scope.getMemberIndex(member);
     if(index > -1) {
+      $scope.memberCount[member] = 0;
       $scope.createThisCommittee.members.list.splice(index,1);
-    } else {  
-      $scope.createThisCommittee.members.list.push(member);
+    } else if($scope.createThisCommittee.members.count > 0 &&
+        $scope.createThisCommittee.members.list.length < $scope.createThisCommittee.members.count){
+      $scope.memberCount[member] = $scope.memberCount[member] || 1;
+      $scope.createThisCommittee.members.list.push({ details : member, count : $scope.memberCount[member]});
     }
     console.log($scope.createThisCommittee.members.list);
   };

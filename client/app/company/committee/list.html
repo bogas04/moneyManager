@@ -23,7 +23,7 @@
         <td> {{stringifyDate(a.start_date)}} </td>
         <td> {{a.amount || "N/A"}} </td>
         <td> {{a.duration.count + " " + a.duration.parameter}} </td>
-        <td> {{a.members.length}} </td> 
+        <td> {{a.members.list.length + "/" + a.members.count}}</td> 
       </tr>
     </tbody>
   </table>

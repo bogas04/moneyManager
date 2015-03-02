@@ -1,5 +1,10 @@
 .member-list {
   overflow:auto;
-  box-shadow:0px -8px 10px -10px black inset;
   max-height:160px;
+  padding-right:50px;
+  font-size: 130%;
+}
+.member-list .btn-inline {
+  display: inline !important;
+  float: right;
 }

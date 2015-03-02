@@ -78,5 +78,13 @@ angular.module('moneyManagerApp')
   .when('/company/profile/committee/:committeeId', {
     templateUrl: 'app/company/committee/profile.html',
     controller: 'CompanyCtrl'
+  })  
+  .when('/company/profile/committee/:committeeId/logs', {
+    templateUrl: 'app/company/committee/logs.html',
+    controller: 'CompanyCtrl'
+  })
+  .when('/company/profile/committee/:committeeId/logs/add', {
+    templateUrl: 'app/company/committee/add-log.html',
+    controller: 'CompanyCtrl'
   });
 });

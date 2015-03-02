@@ -2,6 +2,8 @@
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
 /*
 =====================
@@ -192,7 +194,7 @@ exports.retrieve_committees = function(req, res) {
 // Retrieve a single committee 
 exports.retrieve_committee = function(req, res) {
   var committeeId = req.params.id;
-  Committee.findOne({_id : committeeId, company : req.company._id}).populate('members').exec(function(err, committee) {
+  Committee.findOne({_id : committeeId, company : req.company._id}).populate('members.list.details').exec(function(err, committee) {
     if(err) { return handleError(res, err); }
     if(!committee) { res.json(committee); }
     else res.json(200, committee);
@@ -234,6 +236,7 @@ exports.create_committee = function(req, res) {
   var company = req.company;
   toCreate.company = company._id;
   Committee.create(toCreate, function(err, committee) {
+    console.log(err);
     if(err) { return handleError(res, err); }
     return res.json(201, {error : false, msg : "Committee added", obj : committee.profile}); 
   });

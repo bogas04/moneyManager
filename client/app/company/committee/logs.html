@@ -15,11 +15,10 @@
       <dt>Start Date : </dt> <dd> {{stringifyDate(currentCommittee.start_date) || "N/A"}}</dd>
       <dt>Amount : </dt> <dd> {{currentCommittee.amount}}</dd>
       <dt>Duration : </dt> <dd> {{currentCommittee.duration.count + " " + currentCommittee.duration.parameter}} </dd>
-      <dt>Members : </dt> <dd> {{currentCommittee.members.count}} </dd>
+      <dt>Members : </dt> <dd> {{currentCommittee.length}} </dd>
     </dl>
     <button type="button" class="btn btn-danger btn-md" data-toggle="modal" ng-click="deleteCommittee(currentCommittee)">Delete Committee</button>
     <a href="/company/profile/committee/{{currentCommittee._id}}/logs" type="button" class="btn btn-primary btn-md">View Logs</a>
-    <a href="/company/profile/committee/{{currentCommittee._id}}/logs/add" type="button" class="btn btn-primary btn-md">Add Log</a>
     <a href="/company/profile/committee/{{currentCommittee._id}}/update" type="button" class="btn btn-primary btn-md">Update</a>
   
     <h3> Members </h3>
@@ -31,12 +30,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="m in currentCommittee.members.list">
-          <td><a href="/company/profile/customer/{{m.details._id}}/">{{m.details.name}}</a></td>
-          <td>{{m.details.phone}}</td>
+        <tr ng-repeat="m in currentCommittee.members">
+          <td><a href="/company/profile/customer/{{m._id}}/">{{m.name}}</a></td>
+          <td>{{m.phone}}</td>
         </tr>
       </tbody>
     </table>
+
+    <div class="modal" id="bla"> </div>
     <h3> Update Details </h3>
 
     <form class="form" name="form" ng-submit="updateCommittee(form)" novalidate>
@@ -44,6 +45,12 @@
         <label>Committee Title</label>
         <input placeholder="Enter your Committee Title" value="{{currentCommittee.title}}" type="text" name="title" class="form-control" ng-model="updateThisCommittee.title"/>
       </div>
+
+      <div class="form-group">           
+        <label>Amount </label>
+        <input placeholder="Enter your Amount" value="{{currentCommittee.amount}}" type="text" name="title" class="form-control" ng-model="updateThisCommittee.amount"/>
+      </div>
+      
       <p class="help-block"> {{ message }} </p>
       <button class="btn btn-lg btn-primary" type="submit">Update</button>
     </form>

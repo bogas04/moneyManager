@@ -57,15 +57,21 @@ $('.input-group.date').datepicker({
         </div>
       </div>
 
-      <h4> Select the {{createThisCommittee.members.count - createThisCommittee.members.list.length}} Members from your current customers ({{customers.length}}) </h4>
+      <h4> Select the {{getRemainingMemberCount()}} Members from your current customers ({{customers.length}}) </h4>
       <div class="form-group member-list">
         <div ng-repeat="cus in customers">
           <div class="checkbox">
             <label>
               <input type="checkbox" ng-click="toggleMember(cus._id)"> 
               {{cus.name}} ({{cus.phone}}) 
-              <a href="/company/profile/customer/{{cus._id}}/" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>
             </label>
+            <!--
+              <span class="input-group">
+              <span class="input-group-addon">&times;</span>
+              <input style="width:40px;" type="number" name="{{cus._id}}-count" ng-model="memberCount[cus._id]" 
+              max="{{getRemainingMemberCount()}}" min="0"/> 
+              </span> -->
+          <a class="btn btn-default btn-inline" href="/company/profile/customer/{{cus._id}}/" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>
           </div>
         </div>
       </div>      

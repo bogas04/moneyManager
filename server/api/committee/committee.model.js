@@ -17,6 +17,7 @@ var CommitteeSchema = new Schema({
   },
   logs : [{
     date : Date,
+    bidAmount : Number,
     takenBy : { type : Schema.Types.ObjectId, ref : 'Customer'}
   }],
   members : {
