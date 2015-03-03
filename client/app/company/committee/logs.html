@@ -6,7 +6,8 @@
   <ol class="breadcrumb">  
     <li><a href="company">Home</a></li>
     <li><a href="company/list/committee/">Committee List</a></li>
-    <li><a href="#">Committee Profile</a></li>
+    <li><a href="company/profile/committee/{{currentCommittee._id}}">Committee Profile</a></li>
+    <li><a href="#">View Logs</a></li>
   </ol>
   <div class="row container"> 
     <h3> Committee Details </h3> 
@@ -21,38 +22,22 @@
     <a href="/company/profile/committee/{{currentCommittee._id}}/logs" type="button" class="btn btn-primary btn-md">View Logs</a>
     <a href="/company/profile/committee/{{currentCommittee._id}}/update" type="button" class="btn btn-primary btn-md">Update</a>
   
-    <h3> Members </h3>
+    <h3> Logs </h3>
     <table class="table table-striped table-hover">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Phone</th>
+          <th>Date</th>
+          <th>Bid Amount</th>
+          <th>Took By</th>
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="m in currentCommittee.members">
-          <td><a href="/company/profile/customer/{{m._id}}/">{{m.name}}</a></td>
-          <td>{{m.phone}}</td>
+        <tr ng-repeat="l in currentCommittee.logs">
+          <td>{{stringifyDate(l.date)}}</td>
+          <td>{{l.bidAmount}}</td>
+          <td>{{l.takenBy}}</td>
         </tr>
       </tbody>
     </table>
-
-    <div class="modal" id="bla"> </div>
-    <h3> Update Details </h3>
-
-    <form class="form" name="form" ng-submit="updateCommittee(form)" novalidate>
-      <div class="form-group">           
-        <label>Committee Title</label>
-        <input placeholder="Enter your Committee Title" value="{{currentCommittee.title}}" type="text" name="title" class="form-control" ng-model="updateThisCommittee.title"/>
-      </div>
-
-      <div class="form-group">           
-        <label>Amount </label>
-        <input placeholder="Enter your Amount" value="{{currentCommittee.amount}}" type="text" name="title" class="form-control" ng-model="updateThisCommittee.amount"/>
-      </div>
-      
-      <p class="help-block"> {{ message }} </p>
-      <button class="btn btn-lg btn-primary" type="submit">Update</button>
-    </form>
   </div> 
 </div>

@@ -16,6 +16,7 @@ angular.module('moneyManagerApp')
   $scope.currentAgent = {};
   $scope.currentTerm = {};
   $scope.memberCount = [];
+  $scope.addThisCommitteeLog = { takenBy : null };
   $scope.createThisCommittee = { duration : { parameter : 'months' }, members : { list : [], count : 0 } };
   $scope.addThisTerm = { interest : { type : 'simple'}, installments : { duration : { parameter : 'months' }}};
   $scope.addThisLog = { type  : 'credit' };
@@ -159,13 +160,61 @@ angular.module('moneyManagerApp')
     if(form.$valid) {
       var logDetails = $scope.addThisCommitteeLog;
       logDetails.date = $scope.toDate(logDetails.date);
-      // for each customer, add the amount paid to their debit
-      // for the person who takes the amount, add the net amount to their credit
-      // save these customers 
-      // save the log  
-    }
-  }
 
+      // Update all customers 
+      for(var i = 0; i < $scope.currentCommittee.members.list.length; i++) {
+        // Change Terms
+        var termIndex = $scope.getTermIndex($scope.currentCommittee.members.list[i].details.terms, $scope.currentCommittee.title);      
+        if(termIndex == -1) { // First meeting
+          termIndex = $scope.currentCommittee.members.list[i].details.terms.push({ // Add the term
+            title : $scope.currentCommittee.title,
+            start_date : $scope.currentCommittee.start_date, 
+            logs : [{ // Add the log
+              date : logDetails.date,
+              type : 'debit',
+              amount : $scope.committeeLogOfAmount[$scope.currentCommittee.members.list[i].details._id]
+            }]
+          }) - 1; 
+        } else { // Subsequent meeting
+          $scope.currentCommittee.members.list[i].details.terms[termIndex].logs.push({ // Add the log
+            date : logDetails.date,
+            type : 'debit',
+            amount : $scope.committeeLogOfAmount[$scope.currentCommittee.members.list[i].details._id]
+          });
+        }
+        // If this member took the money
+        if($scope.currentCommittee.members.list[i].details._id === $scope.addThisCommitteeLog.takenBy) {
+          // Add to credit
+          $scope.currentCommittee.members.list[i].details.terms[termIndex].logs.push({
+            date : logDetails.date,
+            type : 'credit',
+            amount : $scope.addThisCommitteeLog.bidAmount * $scope.currentCommittee.members.count
+          });
+          console.log("This member takes the money", $scope.currentCommittee.members.list[i].details);
+        } 
+        $http.put('/api/company/customers/' + $scope.currentCommittee.members.list[i].details._id, $scope.currentCommittee.members.list[i].details)
+          .success(function(data, status, headers, config) {
+            console.log(data);    
+          })
+        .error(function(data, status, headers, config) {
+          console.log("SERIOUS ERROR!");
+        });
+        // deleting customer info to ready for database
+        $scope.currentCommittee.members.list[i].details = $scope.currentCommittee.members.list[i].details._id;
+      } 
+      // pushing the logs
+      $scope.currentCommittee.logs.push($scope.addThisCommitteeLog);
+      $http.put('/api/company/committees/'+$scope.currentCommittee._id, $scope.currentCommittee)
+        .success(function(data, status, headers, config) {
+          console.log(data);
+         $location.path('/company/profile/committee/'+$scope.currentCommittee._id);
+        })
+      .error(function(data, status, headers, config) {
+        console.log(data);
+      });
+      console.log($scope.currentCommittee);
+    }
+  };
   /*
    * Term Functions
    */
@@ -387,12 +436,33 @@ angular.module('moneyManagerApp')
     }
     return balance;
   }; 
+  $scope.hasTaken = function(id) {
+    for(var i = 0; i < $scope.currentCommittee.logs.length; i++) {
+      if($scope.currentCommittee.logs[i].takenBy === id)
+        return true;
+    }
+    return false;
+  };
+  $scope.updateTakenBy = function(id) {
+    $scope.addThisCommitteeLog.takenBy = id;
+    console.log($scope.addThisCommitteeLog);
+  };
+  $scope.getTermIndex = function(terms, title) {
+    var index = -1;
+    for(var i = 0, found = false; !found && i < terms.length; i++) {
+      if(terms[i].title === title) {
+        index = i;
+        found = true;
+      }
+    }
+    return index;
+  };
   $scope.getMemberIndex = function (member) {
     var index = -1;
-    for(var i = 0;i < $scope.createThisCommittee.members.list.length; i++) {
+    for(var i = 0, found = false;!found && i < $scope.createThisCommittee.members.list.length; i++) {
       if($scope.createThisCommittee.members.list[i].details === member) {
         index = i;
-        break;
+        found = true;
       }
     }
     return index;

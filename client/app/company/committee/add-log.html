@@ -55,7 +55,7 @@ $('.input-group.date').datepicker({
           <tr ng-repeat="m in currentCommittee.members.list">
             <td><a href="/compan/profile/customer/{{m.details._id}}" target="_blank">{{m.details.name}}</a></td>
             <td><input type="number" ng-model="committeeLogOfAmount[m.details._id]"></td>
-            <td><input type="radio" name="takenBy" value="0" ng-model="addThisCommitteeLog.takenBy" ng-disabled="memberHasTakenAmount(m.details._id)"></td>
+            <td><input type="radio" name="takenBy" ng-model="addThisCommitteeLog.takenBy" value="{{m.details._id}}" ng-disabled="hasTaken(m.details._id)"></td>
           </tr>      
         </tbody>
       </table>
