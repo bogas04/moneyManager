@@ -267,9 +267,12 @@ angular.module('moneyManagerApp')
     $scope.submitted = true;
     if(form.$valid) {
       var newTerm = $scope.addThisTerm;
-      var d = newTerm.start_date.split('/');
-      d = new Date(d[2], d[1] - 1, d[0]);
-      newTerm.start_date = d;
+      newTerm.start_date = $scope.toDate(newTerm.start_date);
+      newTerm.logs = [{
+        date : newTerm.start_date,
+        amount : newTerm.amount,
+        type : 'credit'
+      }];
       var updatedCustomer = $scope.currentCustomer;
       for(var i = 0; i < updatedCustomer.terms.length; i++) {
         if(updatedCustomer.terms[i].title === newTerm.title) {

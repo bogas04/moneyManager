@@ -17,6 +17,7 @@
       <dt>Address : </dt> <dd> {{currentCustomer.address?currentCustomer.address.title || "N/A" : "N/A"}}</dd>
     </dl>
     <button type="button" class="btn btn-danger btn-md" data-toggle="modal" ng-click="deleteCustomer(currentCustomer)">Delete Customer</button>
+    <a href="/company/profile/customer/{{currentCustomer._id}}/terms/add" class="btn btn-primary">Add Term</a>
     <a href="/company/profile/customer/{{currentCustomer._id}}/terms" type="button" class="btn btn-primary btn-md">View Terms</a>
     <a href="/company/profile/customer/{{currentCustomer._id}}/logs" type="button" class="btn btn-primary btn-md">View Logs</a>
     <div class="modal" id="bla"> </div>

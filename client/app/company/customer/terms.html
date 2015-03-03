@@ -20,8 +20,6 @@
           <th>Interest</th>
           <th># Installments</th>
           <th>Current Balance</th>
-          <th>Next Due Date</th>
-          <th>Next Due Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -32,8 +30,6 @@
           <td>{{capInit(t.interest.type) || "N/A"}} {{ t.interest.rate?" @ " + t.interest.rate + " %": ""}}</td>
           <td>{{t.installments.count + " / "+ t.installments.duration.count + " " + t.installments.duration.parameter}}</td>
           <td>₹ {{computeBalance(t)}}</td>
-          <td>Due Date</td>
-          <td>₹ Next Due Amount</td>
         </tr>
       </tbody>
     </table>
