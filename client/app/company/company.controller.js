@@ -72,7 +72,7 @@ angular.module('moneyManagerApp')
   // Committee Profile
   if($location.path().indexOf('/company/profile/committee/') > -1) {
     $http.get('/api/company/committees/'+$routeParams.committeeId)
-      .success( function (data, status, headers, config) {
+      .success( function (data) {
         $scope.currentCommittee = data;
         if($location.path().indexOf('/logs/add') > -1) {
           $scope.addThisCommitteeLog = { bidAmount : data.amount / data.duration.count } ;
@@ -165,7 +165,7 @@ angular.module('moneyManagerApp')
       for(var i = 0; i < $scope.currentCommittee.members.list.length; i++) {
         // Change Terms
         var termIndex = $scope.getTermIndex($scope.currentCommittee.members.list[i].details.terms, $scope.currentCommittee.title);      
-        if(termIndex == -1) { // First meeting
+        if(termIndex === -1) { // First meeting
           termIndex = $scope.currentCommittee.members.list[i].details.terms.push({ // Add the term
             title : $scope.currentCommittee.title,
             start_date : $scope.currentCommittee.start_date, 
@@ -190,26 +190,21 @@ angular.module('moneyManagerApp')
             type : 'credit',
             amount : $scope.addThisCommitteeLog.bidAmount * $scope.currentCommittee.members.count
           });
-          console.log("This member takes the money", $scope.currentCommittee.members.list[i].details);
+          console.log('This member takes the money', $scope.currentCommittee.members.list[i].details);
         } 
-        $http.put('/api/company/customers/' + $scope.currentCommittee.members.list[i].details._id, $scope.currentCommittee.members.list[i].details)
-          .success(function(data, status, headers, config) {
-            console.log(data);    
-          })
-        .error(function(data, status, headers, config) {
-          console.log("SERIOUS ERROR!");
-        });
+        // Updating Customer
+        $scope._updateCustomer($scope.currentCommittee.members.list[i].details);
         // deleting customer info to ready for database
         $scope.currentCommittee.members.list[i].details = $scope.currentCommittee.members.list[i].details._id;
       } 
       // pushing the logs
       $scope.currentCommittee.logs.push($scope.addThisCommitteeLog);
       $http.put('/api/company/committees/'+$scope.currentCommittee._id, $scope.currentCommittee)
-        .success(function(data, status, headers, config) {
+        .success(function(data) {
           console.log(data);
          $location.path('/company/profile/committee/'+$scope.currentCommittee._id);
         })
-      .error(function(data, status, headers, config) {
+      .error(function(data) {
         console.log(data);
       });
       console.log($scope.currentCommittee);
@@ -227,7 +222,6 @@ angular.module('moneyManagerApp')
       var updatedCustomer = $scope.currentCustomer;
       for(var i = 0; i < updatedCustomer.terms.length; i++) {
         if(updatedCustomer.terms[i].title !== newTerm.title) {
-          alert('This term doesn\'t exist!');
           $location.path('company/profile/customer/'+$scope.currentCustomer._id+'/terms');
           return;
         }
@@ -261,7 +255,6 @@ angular.module('moneyManagerApp')
         return;
       }
     }
-    alert('Term not found!');
   };
   $scope.addTerm = function(form) {
     $scope.submitted = true;
@@ -276,7 +269,6 @@ angular.module('moneyManagerApp')
       var updatedCustomer = $scope.currentCustomer;
       for(var i = 0; i < updatedCustomer.terms.length; i++) {
         if(updatedCustomer.terms[i].title === newTerm.title) {
-          alert('This term already exists! Choose different name');
           $location.path('company/profile/customer/'+$scope.currentCustomer._id+'/terms');
           return;
         }
@@ -313,6 +305,7 @@ angular.module('moneyManagerApp')
           .error( function (data, status, headers, config){
             console.log(data, status, headers, config);
           });
+          return; 
         }
       } 
     } 
@@ -367,6 +360,16 @@ angular.module('moneyManagerApp')
         console.log(data, status, headers, config);
       });
     }
+  };
+  $scope._updateCustomer = function(customer) {
+    $http.put('/api/company/customers/'+customer._id, customer)
+      .success( function (data, status, headers, config){
+        $location.path('company/list/customer/');
+        console.log(data, status, headers, config);
+      })
+    .error( function (data, status, headers, config){
+      console.log(data, status, headers, config);
+    });
   };
   $scope.updateCustomer = function(form) {
     $scope.submitted = true;
@@ -441,8 +444,9 @@ angular.module('moneyManagerApp')
   }; 
   $scope.hasTaken = function(id) {
     for(var i = 0; i < $scope.currentCommittee.logs.length; i++) {
-      if($scope.currentCommittee.logs[i].takenBy === id)
+      if($scope.currentCommittee.logs[i].takenBy === id) {
         return true;
+      }
     }
     return false;
   };
@@ -481,7 +485,7 @@ angular.module('moneyManagerApp')
     return sum;
   };
   $scope.toggleMember = function(member) {
-    if($scope.createThisCommittee.members.count == 0) {
+    if($scope.createThisCommittee.members.count === 0) {
       return;
     }
     var index = $scope.getMemberIndex(member);
