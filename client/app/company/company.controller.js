@@ -19,7 +19,7 @@ angular.module('moneyManagerApp')
   $scope.addThisCommitteeLog = { takenBy : null };
   $scope.createThisCommittee = { duration : { parameter : 'months' }, members : { list : [], count : 0 } };
   $scope.addThisTerm = { interest : { type : 'simple'}, installments : { duration : { parameter : 'months' }}};
-  $scope.addThisLog = { type  : 'credit' };
+  $scope.addThisLog = { type  : 'credit'};
   /* 
    * Filling Scopes
    */
@@ -33,6 +33,10 @@ angular.module('moneyManagerApp')
           for(var i = 0; i < data.terms.length; i++) {
             if(data.terms[i].title === $routeParams.termname) {
               $scope.currentTerm = data.terms[i];
+              if($location.path().indexOf('logs/add') > -1) {
+                $scope.addThisLog.amount = $scope.computeLogAmount($scope.currentTerm);
+                $scope.addThisLog.date = $scope.stringifyDate(new Date().getTime());
+              }
               break;
             }
           }  
@@ -40,14 +44,14 @@ angular.module('moneyManagerApp')
       });
   }
   // Customer List
-  if($location.path() === '/company/list/customer') {
+  if( $location.path().indexOf('company') > -1 ) {
     $http.get('/api/company/customers/')
-      .success( function (data, status, headers, config) {
+      .success( function (data) {
         $scope.customers = data;
-        console.log(data, status, headers, config);
+        console.log(data);
       })
-    .error( function (data, status, headers, config) {
-      console.log(data, status, headers, config);
+    .error( function (data) {
+      console.log(data);
     });
   }
   // Agent Profile
@@ -261,10 +265,11 @@ angular.module('moneyManagerApp')
     if(form.$valid) {
       var newTerm = $scope.addThisTerm;
       newTerm.start_date = $scope.toDate(newTerm.start_date);
+      newTerm.end_date = $scope.toDate(newTerm.end_date);
       newTerm.logs = [{
         date : newTerm.start_date,
         amount : newTerm.amount,
-        type : 'credit'
+        type : 'debit'
       }];
       var updatedCustomer = $scope.currentCustomer;
       for(var i = 0; i < updatedCustomer.terms.length; i++) {
@@ -353,7 +358,7 @@ angular.module('moneyManagerApp')
     if(form.$valid) {
       $http.post('/api/company/customers', $scope.createThisCustomer)
         .success( function (data, status, headers, config){
-          $location.path('company/list/customer/');
+          $location.path('company/list/terms/');
           console.log(data, status, headers, config);
         })
       .error( function (data, status, headers, config){
@@ -429,18 +434,18 @@ angular.module('moneyManagerApp')
   /*
    * Helper Functions
    */
-  $scope.capInit = function (str) { return (!str) ? '': str[0].toUpperCase() + str.slice(1); }; 
+  $scope.capInit = function (str) { return (!str) ? str : str[0].toUpperCase() + str.slice(1); }; 
   $scope.creditOrDebit = function(str) { console.log('called'); return str === 'credit'? 'danger' : 'success'; };
   $scope.computeBalance = function (term) {
     var balance = 0;
     for(var i = 0; i < term.logs.length; i++) {
       if(term.logs[i].type === 'credit') {
-        balance -= term.logs[i].amount;
-      } else {
         balance += term.logs[i].amount;
+      } else {
+        balance -= term.logs[i].amount;
       }
     }
-    return balance;
+    return $scope.roundTo(balance);
   }; 
   $scope.hasTaken = function(id) {
     for(var i = 0; i < $scope.currentCommittee.logs.length; i++) {
@@ -504,8 +509,44 @@ angular.module('moneyManagerApp')
     var d = str.split('/');
     return new Date(d[2], d[1] - 1, d[0]);
   };
+  $scope.logsWithBalance = function(logs) {
+    if(!logs) { return logs; }
+    var balance = 0;
+    for(var i = 0; i < logs.length; i++) {
+      if(logs[i].type === 'credit') {
+        balance += logs[i].amount;
+      } else {
+        balance -= logs[i].amount;
+      }
+      logs[i].balance = $scope.roundTo(balance);
+    }
+    return logs;
+  };
+  $scope.computeLogAmount = function(term) {
+    return $scope.roundTo(term.amount * term.interest.rate * 0.01);
+  };
+  $scope.isToBeCollected = function(term, inDays) {
+    var termDate = new Date(term.start_date);
+    var endDate = new Date(term.end_date);
+    var today = new Date();
+    return today.getDate() === (termDate.getDate() - inDays);
+    return today.getDate() === (termDate.getDate() - inDays) &&
+           today.getMonth() > termDate.getMonth() &&
+           today.getMonth() < endDate.getMonth() &&
+           today.getYear() >= termDate.getYear() &&
+           today.getYear() <= termDate.getYear();
+  };
+  $scope.roundTo = function(number, precision) {
+    if(!number) { return number; }
+    var _number = parseInt(number);
+    if(_number === number) { return number; }
+    if(Math.abs(number) < 1) { return 0; }
+    precision = precision || 2;
+    return number.toPrecision((_number + "").length + precision);
+  };
   $scope.stringifyDate = function(str) {
     var d = new Date(str);
+    if(d == "Invalid Date") { return null; }
     var months = ['January', 'Feburary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
   };

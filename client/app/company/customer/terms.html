@@ -1,7 +1,7 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 <div class="container">
   <div class="page-header">
-    <h1>{{currentCustomer.name}} Terms</h1>
+    <h1>{{currentCustomer.name}}'s Terms</h1>
   </div>
   <ol class="breadcrumb">  
     <li><a href="company">Home</a></li>
@@ -10,26 +10,33 @@
     <li><a href="#">Customer Terms</a></li>
   </ol>
   <div class="row container"> 
-    <a href="/company/profile/customer/{{currentCustomer._id}}/terms/add" class="btn btn-primary">Add New</a>
-    <table class="table table-bordered table-striped table-hover">
+    <div class="form-group form-inline">
+      <a href="/company/profile/customer/{{currentCustomer._id}}/terms/add" class="btn btn-primary">Add New</a>
+      <input class="form-control" type="text" ng-model="filterTerms" placeholder="Search"/>
+    </div>
+    <table class="table table-responsive table-bordered table-striped table-hover">
       <thead>
         <tr>
           <th>Term Name</th>
           <th>Start Date</th>
+          <th>End Date</th>
           <th>Amount</th>
           <th>Interest</th>
           <th># Installments</th>
           <th>Current Balance</th>
+          <th>Logs</th>
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="t in currentCustomer.terms"> 
+        <tr ng-repeat="t in currentCustomer.terms | filter : filterTerms"> 
           <td><a href="company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}">{{t.title}}</a></td>
           <td>{{stringifyDate(t.start_date)}}</td>
-          <td> {{t.amount}}</td>
+          <td>{{stringifyDate(t.end_date) || "N/A"}}</td>
+          <td>{{roundTo(t.amount || t.logs[0].amount || "N/A")}}</td>
           <td>{{capInit(t.interest.type) || "N/A"}} {{ t.interest.rate?" @ " + t.interest.rate + " %": ""}}</td>
-          <td>{{t.installments.count + " / "+ t.installments.duration.count + " " + t.installments.duration.parameter}}</td>
-          <td>₹ {{computeBalance(t)}}</td>
+          <td>{{t.installments.count + " " + t.installments.duration.parameter}}</td>
+          <td>₹ {{computeBalance(t)}} </td>
+          <td><a href="company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}/logs/add" class="btn btn-xs btn-info">Add</a> <a href="company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}/logs" class="btn btn-xs btn-warning">View</a>
         </tr>
       </tbody>
     </table>

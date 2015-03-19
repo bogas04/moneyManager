@@ -43,7 +43,15 @@ angular.module('moneyManagerApp')
     templateUrl: 'app/company/customer/profile.html',
     controller: 'CompanyCtrl'
   })
-  .when('/company/profile/customer/:id/terms', { // Customer Term Related
+  .when('/company/list/ledger', { // Customer Ledger Related
+    templateUrl: 'app/company/customer/ledger.html',
+    controller: 'CompanyCtrl'
+  })
+  .when('/company/list/terms', { // Customer Term Related
+    templateUrl: 'app/company/customer/all-terms.html',
+    controller: 'CompanyCtrl'
+  })
+  .when('/company/profile/customer/:id/terms',  { 
     templateUrl: 'app/company/customer/terms.html',
     controller: 'CompanyCtrl'
   })  

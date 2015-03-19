@@ -1,8 +1,0 @@
-1) Term amount <- Installment amount
-2) Installments are automatically computed using periodicity and term period
-3) Show due dates, due amount, missed amounts at term profile
-4) Committee autocomplete, add customer inline
-5) Finances 
-6) Notifications 
-
-

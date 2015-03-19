@@ -57,24 +57,27 @@ $('.input-group.date').datepicker({
         </div>
       </div>
 
-      <h4> Select the {{getRemainingMemberCount()}} Members from your current customers ({{customers.length}}) </h4>
-      <div class="form-group member-list">
-        <div ng-repeat="cus in customers">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-click="toggleMember(cus._id)"> 
-              {{cus.name}} ({{cus.phone}}) 
-            </label>
-            <!--
-              <span class="input-group">
-              <span class="input-group-addon">&times;</span>
-              <input style="width:40px;" type="number" name="{{cus._id}}-count" ng-model="memberCount[cus._id]" 
-              max="{{getRemainingMemberCount()}}" min="0"/> 
-              </span> -->
-          <a class="btn btn-default btn-inline" href="/company/profile/customer/{{cus._id}}/" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>
-          </div>
-        </div>
-      </div>      
+      <h4> Select {{getRemainingMemberCount() || ""}} Members from your current customers ({{customers.length}}) </h4>
+      <div class="form-group form-inline">
+        <label> Filter by typing name or phone number </label>
+        <input type="text" name="filterCustomer" class="form-control" ng-model="filterCustomer" placeholder="Type here"/>
+      </div>
+      <table class="table table-responsive table-striped table-bordered">
+        <thead>
+          <tr>
+            <th> <span class="glyphicon glyphicon-check"></span> </th>
+            <th> Name </th>
+            <th> Phone </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr  ng-repeat="cus in customers | filter : filterCustomer">
+            <td> <input type="checkbox" ng-click="toggleMember(cus._id)" ng-disabled="getRemainingMemberCount() === 0"></td>
+            <td><a href="/company/profile/customer/{{cus._id}}/">{{cus.name}}</a></td>
+            <td>{{cus.phone}}</td>
+          </tr>
+        </tbody>
+      </table>
       <p class="help-block"> {{ message }} </p>
       <button class="btn btn-lg btn-primary" type="submit">Create</button>
     </form>

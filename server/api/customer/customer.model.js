@@ -20,6 +20,7 @@ var CustomerSchema = new Schema({
   terms : [{
     title : String,
     start_date : Date,
+    end_date : Date,
     amount : Number,
     interest : {
       rate :  Number,

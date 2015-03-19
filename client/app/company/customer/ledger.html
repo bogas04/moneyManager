@@ -1,0 +1,32 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="container">
+  <div class="page-header">
+    <h1><span class="glyphicon glyphicon-book"></span> Ledger</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="#">Ledger</a></li>
+  </ol>
+  <div class="row container"> 
+    <div class="form-group form-inline">
+      <label>Select a customer</label>
+      <input type="text" class="form-control" ng-model="filterCustomer" placeholder="Search"/>
+    </div>
+    <table class="table table-responsive table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Terms</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="c in customers | filter : filterCustomer">
+          <td><a href="/company/profile/customer/{{c._id}}/logs">{{c.name}}</a></td>
+          <td>{{c.phone}}</td>
+          <td class="text-center"><a href="/company/profile/customer/{{c._id}}/terms">View {{c.terms.length}} term(s)</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div> 
+</div>

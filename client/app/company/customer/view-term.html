@@ -24,14 +24,21 @@ $('.input-group.date').datepicker({
     <dl class="dl-horizontal">
       <dt>Title : </dt> <dd> {{currentTerm.title || "N/A"}}</dd>
       <dt>Start Date : </dt> <dd> {{stringifyDate(currentTerm.start_date)}}</dd>
-      <dt>Amount : </dt> <dd> {{currentTerm.amount}}</dd>
+      <dt>Last Date : </dt> <dd> {{stringifyDate(currentTerm.end_date) || "N/A"}}</dd>
+      <dt>Amount : </dt> <dd> {{roundTo(currentTerm.amount || currentTerm.logs[0].amount) || "N/A"}}</dd>
+      <div ng-if="currentTerm.installments && currentTerem.installments.duration">
       <dt>Installments : </dt> <dd> {{currentTerm.installments.count || "N/A"}}</dd>
-      <dt>Installment Duration : </dt> <dd> {{currentTerm.installments.duration.count + " " + currentTerm.installments.duration.parameter}} </dd>
+      <dt>Installment Duration : </dt> <dd> {{currentTerm.installments.duration.count || "N/A"}} {{currentTerm.installments.duration.parameter || ""}} </dd>
+      </div>
+      <div ng-if="currentTerm.interest && currentTerm.interest.rate">
       <dt>Interest Rate : </dt> <dd> {{currentTerm.interest.rate + " % " || "N/A"}}</dd>
       <dt>Interest Type : </dt> <dd> {{capInit(currentTerm.interest.type) || "N/A"}}</dd>
+      </div>
     </dl>
-    <button type="button" class="btn btn-danger btn-md" data-toggle="modal" ng-click="deleteTerm(currentTerm.title)">Delete Term</button>
-    <a href="/company/profile/customer/{{currentCustomer._id}}/terms/{{currentTerm.title}}/logs" type="button" class="btn btn-primary btn-md">View Logs</a>
+    <div class="form-group">
+      <button type="button" class="btn btn-danger btn-md" data-toggle="modal" ng-click="deleteTerm(currentTerm.title)">Delete Term</button>
+      <a href="/company/profile/customer/{{currentCustomer._id}}/terms/{{currentTerm.title}}/logs" type="button" class="btn btn-primary btn-md">View Logs</a>
+    </div>
 <!--
     <h3> Update Details </h3>
     <form class="form" name="form" ng-submit="updateTerm(form)" novalidate>

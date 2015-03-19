@@ -20,53 +20,69 @@
     <a href="/company/profile/customer/{{currentCustomer._id}}/terms/add" class="btn btn-primary">Add Term</a>
     <a href="/company/profile/customer/{{currentCustomer._id}}/terms" type="button" class="btn btn-primary btn-md">View Terms</a>
     <a href="/company/profile/customer/{{currentCustomer._id}}/logs" type="button" class="btn btn-primary btn-md">View Logs</a>
-    <div class="modal" id="bla"> </div>
-    <h3> Update Details </h3>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Update</button>
 
-    <form class="form" name="form" ng-submit="updateCustomer(form)" novalidate>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"> Update Details </h3>
+          </div>
+          <form class="form" name="form" ng-submit="updateCustomer(form)" novalidate>
+            <div class="modal-body">
 
-      <div class="form-group">           
-        <label>Customer Name</label>
-        <input placeholder="{{currentCustomer.name}}" type="text" name="name" class="form-control" ng-model="updateThisCustomer.name"/>
+              <div class="form-group">           
+                <label>Customer Name</label>
+                <input placeholder="{{currentCustomer.name}}" type="text" name="name" class="form-control" ng-model="updateThisCustomer.name"/>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-success': form.phone.$valid && submitted,
+              'has-error': form.phone.$invalid && submitted }">
+                <label>Customer Phone </label>
+                <input placeholder="{{currentCustomer.phone}}" type="text" phone="phone" class="form-control" ng-model="updateThisCustomer.phone"/>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-success': form.email.$valid && submitted,
+              'has-error': form.email.$invalid && submitted }">
+                <label>Customer Email</label>
+                <input placeholder="{{currentCustomer.email}}" type="email" name="email" class="form-control" ng-model="updateThisCustomer.email" mongoose-error/>
+                <p class="help-block" ng-show="form.owner_email.$error.email && submitted">
+                Doesn't look like a valid email.
+                </p>
+                <p class="help-block" ng-show="form.owner_email.$error.required && submitted">
+                What's your email address?
+                </p>
+                <p class="help-block" ng-show="form.owner_email.$error.mongoose">
+                {{ errors.email }}
+                </p>
+              </div>
+
+              <div class="form-group">           
+                <label>Address</label>
+                <input placeholder="{{currentCustomer.address.title}}" type="text" name="address_title" class="form-control" ng-model="updateThisCustomer.address.title"/>
+              </div>
+
+              <div class="form-group">           
+                <label>Lattitude</label>
+                <input placeholder="{{currentCustomer.address.coordinates.lattitude}}" type="text" name="address_coordinates_lattitude" class="form-control" ng-model="updateThisCustomer.address.coordinates.lattitude"/>
+              </div>
+
+              <div class="form-group">           
+                <label>Longitude</label>
+                <input placeholder="{{currentCustomer.address.coordinates.longitude}}" type="text" name="address_coordinates_longitude" class="form-control" ng-model="updateThisCustomer.address.coordinates.longitude"/>
+              </div>
+              <p class="help-block"> {{ message }} </p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+              <button class="btn btn-primary" type="submit">Save changes</button>
+            </div>
+          </form>
+        </div>
       </div>
-
-      <div class="form-group" ng-class="{ 'has-success': form.phone.$valid && submitted,
-      'has-error': form.phone.$invalid && submitted }">
-        <label>Customer Phone </label>
-        <input placeholder="{{currentCustomer.phone}}" type="text" phone="phone" class="form-control" ng-model="updateThisCustomer.phone"/>
-      </div>
-
-      <div class="form-group" ng-class="{ 'has-success': form.email.$valid && submitted,
-      'has-error': form.email.$invalid && submitted }">
-        <label>Customer Email</label>
-        <input placeholder="{{currentCustomer.email}}" type="email" name="email" class="form-control" ng-model="updateThisCustomer.email" mongoose-error/>
-        <p class="help-block" ng-show="form.owner_email.$error.email && submitted">
-        Doesn't look like a valid email.
-        </p>
-        <p class="help-block" ng-show="form.owner_email.$error.required && submitted">
-        What's your email address?
-        </p>
-        <p class="help-block" ng-show="form.owner_email.$error.mongoose">
-        {{ errors.email }}
-        </p>
-      </div>
-
-      <div class="form-group">           
-        <label>Address</label>
-        <input placeholder="{{currentCustomer.address.title}}" type="text" name="address_title" class="form-control" ng-model="updateThisCustomer.address.title"/>
-      </div>
-
-      <div class="form-group">           
-        <label>Lattitude</label>
-        <input placeholder="{{currentCustomer.address.coordinates.lattitude}}" type="text" name="address_coordinates_lattitude" class="form-control" ng-model="updateThisCustomer.address.coordinates.lattitude"/>
-      </div>
-
-      <div class="form-group">           
-        <label>Longitude</label>
-        <input placeholder="{{currentCustomer.address.coordinates.longitude}}" type="text" name="address_coordinates_longitude" class="form-control" ng-model="updateThisCustomer.address.coordinates.longitude"/>
-      </div>
-      <p class="help-block"> {{ message }} </p>
-      <button class="btn btn-lg btn-primary" type="submit">Update</button>
-    </form>
+    </div>
   </div> 
 </div>
