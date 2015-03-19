@@ -1,7 +1,7 @@
 ToDo
 ====
 * Ledger same balance for all
-* Shift agents - customers etc to top nav
+√ Shift agents - customers etc to top nav
 * Ledger sorted date wise 
 * SMS has a middle screen
 * Delete has a middle screen

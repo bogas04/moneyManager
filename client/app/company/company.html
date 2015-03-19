@@ -1,4 +1,5 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
+<div ng-include="'components/navbar/navbar-secondary.html'"></div>
 
 <div class="container">
   <!-- PAGE HEADER -->
@@ -17,7 +18,7 @@
       <div ng-repeat="t in c.terms">
         <!-- Missed -->
         <div class="alert alert-danger alert-dismissable" role="alert" ng-if="isToBeCollected(t, -1)">
-          <strong>Yesterday :</strong> Collect {{computeLogAmount(t)}} from <strong>{{c.name}}</strong> for Term : {{t.title}}
+          <strong>Yesterday :</strong> Collect ₹ {{computeLogAmount(t)}} from <strong>{{c.name}}</strong> for Term : {{t.title}}
           <div class="pull-right">
             <a href="#" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-phone"></span> SMS</a> 
             <a href="/company/profile/customer/{{c._id}}/terms/{{t.title}}/logs/add" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-check"></span> Add</a> 
@@ -29,7 +30,7 @@
 
         <!-- Today -->
         <div class="alert alert-warning alert-dismissable" role="alert" ng-if="isToBeCollected(t, 0)">
-          <strong>Today :</strong> Collect {{computeLogAmount(t)}} from <strong>{{c.name}}</strong> for Term : {{t.title}}
+          <strong>Today :</strong> Collect ₹ {{computeLogAmount(t)}} from <strong>{{c.name}}</strong> for Term : {{t.title}}
           <div class="pull-right">
             <a href="#" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-phone"></span> SMS</a> 
             <a href="/company/profile/customer/{{c._id}}/terms/{{t.title}}/logs/add" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-check"></span> Add</a> 
@@ -41,7 +42,7 @@
 
         <!-- Tomorrow -->
         <div class="alert alert-info alert-dismissable" role="alert" ng-if="isToBeCollected(t, 1)">
-          <strong>Tomorrow :</strong> Collect {{computeLogAmount(t)}} from <strong>{{c.name}}</strong> for Term : {{t.title}}
+          <strong>Tomorrow :</strong> Collect ₹ {{computeLogAmount(t)}} from <strong>{{c.name}}</strong> for Term : {{t.title}}
           <div class="pull-right">
             <a href="#" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-phone"></span> SMS</a> 
             <a href="/company/profile/customer/{{c._id}}/terms/{{t.title}}/logs/add" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-check"></span> Add</a> 

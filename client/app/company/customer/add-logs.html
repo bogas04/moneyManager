@@ -1,4 +1,5 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
+<div ng-include="'components/navbar/navbar-secondary.html'"></div>
 <script>
 $('.input-group.date').datepicker({
   format: "dd/mm/yyyy",
@@ -42,7 +43,7 @@ $('.input-group.date').datepicker({
         <label>Log Amount</label>
         <div class="input-group">
           <span class="input-group-addon">₹</span>
-          <input type="number" class="form-control" ng-model="addThisLog.amount" placeholder="Amount Paid/Given" />
+          <input type="text" class="form-control" ng-model="addThisLog.amount" placeholder="Amount Paid/Given" />
         </div>       
       </div>
       <p class="help-block"> {{ message }} </p>

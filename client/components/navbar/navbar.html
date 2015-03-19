@@ -11,7 +11,7 @@
     <div collapse="isCollapsed" class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav">
         <li ng-repeat="item in menu" ng-class="{active: isActive(item.link)}">
-            <a ng-href="{{item.link}}">{{item.title}}</a>
+          <a ng-href="{{item.link}}">{{item.title}}</a>
         </li>
       </ul>
 
@@ -20,7 +20,7 @@
         <li ng-show="isLoggedIn() && isCompany()"><a href="/company">Dashboard</a></li>
 
         <li ng-hide="isLoggedIn()" ><a href="/login-company">Login</a></li>
-        
+
         <li ng-show="isLoggedIn() && isAdmin()"><p class="navbar-text">Hello, {{ getCurrentAdmin().name.split(' ')[0] }} !</p> </li>
         <li ng-show="isLoggedIn() && isCompany()"><p class="navbar-text">Hello, {{ getCurrentCompany().owner.name.split(' ')[0] }} !</p> </li>
 
@@ -29,3 +29,4 @@
     </div>
   </div>
 </div>
+

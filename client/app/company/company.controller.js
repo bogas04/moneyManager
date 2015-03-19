@@ -34,7 +34,7 @@ angular.module('moneyManagerApp')
             if(data.terms[i].title === $routeParams.termname) {
               $scope.currentTerm = data.terms[i];
               if($location.path().indexOf('logs/add') > -1) {
-                $scope.addThisLog.amount = $scope.computeLogAmount($scope.currentTerm);
+                $scope.addThisLog.amount = $scope.computeLogAmount(data.terms[i]);
                 $scope.addThisLog.date = $scope.stringifyDate(new Date().getTime());
               }
               break;
