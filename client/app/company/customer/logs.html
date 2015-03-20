@@ -27,11 +27,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="t in logsWithBalance(currentTerm.logs)"> 
-          <td>{{stringifyDate(t.date)}}</td>
-          <td>{{t.type === "credit"? "₹" + roundTo(t.amount) : ""}}</td>
-          <td>{{t.type === "debit"? "₹" + roundTo(t.amount) : ""}}</td>
-          <td>{{t.balance}} </td>
+        <tr ng-repeat="l in logsWithBalance(currentTerm.logs)"> 
+          <td>{{stringifyDate(l.date)}}</td>
+          <td class="{{l.type==='credit'?'success':''}}">{{l.type === 'credit' ? "₹" + roundTo(l.amount) : ""}}</td>
+          <td class="{{l.type==='debit'?'danger':''}}">{{l.type === 'debit' ? "₹" + roundTo(l.amount) : ""}}</td>
+          <td>{{l.balance}} </td>
           <td><button class="btn btn-xs btn-danger" ng-click="deleteLog(t)">&times; Delete This Log</button></td>
         </tr>
       </tbody>

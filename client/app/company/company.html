@@ -17,7 +17,7 @@
       <!-- Terms -->
       <div ng-repeat="t in c.terms">
         <!-- Missed -->
-        <div class="alert alert-danger alert-dismissable" role="alert" ng-if="isToBeCollected(t, -1)">
+        <div class="alert reminder alert-danger alert-dismissable" role="alert" ng-if="isToBeCollected(t, -1)">
           <strong>Yesterday :</strong> Collect ₹ {{computeLogAmount(t)}} from <strong>{{c.name}}</strong> for Term : {{t.title}}
           <div class="pull-right">
             <a href="#" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-phone"></span> SMS</a> 
@@ -29,7 +29,7 @@
         <!-- Missed/ -->
 
         <!-- Today -->
-        <div class="alert alert-warning alert-dismissable" role="alert" ng-if="isToBeCollected(t, 0)">
+        <div class="alert reminder alert-warning alert-dismissable" role="alert" ng-if="isToBeCollected(t, 0)">
           <strong>Today :</strong> Collect ₹ {{computeLogAmount(t)}} from <strong>{{c.name}}</strong> for Term : {{t.title}}
           <div class="pull-right">
             <a href="#" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-phone"></span> SMS</a> 
@@ -41,7 +41,7 @@
         <!-- Today/ -->
 
         <!-- Tomorrow -->
-        <div class="alert alert-info alert-dismissable" role="alert" ng-if="isToBeCollected(t, 1)">
+        <div class="alert reminder alert-info alert-dismissable" role="alert" ng-if="isToBeCollected(t, 1)">
           <strong>Tomorrow :</strong> Collect ₹ {{computeLogAmount(t)}} from <strong>{{c.name}}</strong> for Term : {{t.title}}
           <div class="pull-right">
             <a href="#" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-phone"></span> SMS</a> 
@@ -55,32 +55,5 @@
       <!-- Terms/ -->
     </div>
     <!-- Customers/ -->
-
-    <div class="row">
-      <div class="col-md-2"> 
-        <h4> <a class="btn btn-md btn-default" href="/company/list/agent"><span class="glyphicon glyphicon-briefcase"> </span> Agents </a></h4>
-        <p>Organize your company with help of agents.</p>
-      </div>
-      <div class="col-md-2">
-        <h4> <a class="btn btn-md btn-default" href="/company/list/terms"><span class="glyphicon glyphicon-transfer"> </span> Lending </a></h4>
-        <p>Manage your finances and lending here.</p>
-      </div>
-      <div class="col-md-2">
-        <h4> <a class="btn btn-md btn-default" href="company/list/committee"><span class="glyphicon glyphicon-list-alt"> </span> Committees </a></h4>
-        <p>Committee management never became more simplified.</p>
-      </div>
-      <div class="col-md-2">
-        <h4> <a class="btn btn-md btn-default" href="/company/list/ledger"> <span class="glyphicon glyphicon-book"> </span> Ledger </a></h4>
-        <p>View ledgers of your customers with the help of powerful tools.</p>
-      </div>
-      <div class="col-md-2">
-        <h4> <a class="btn btn-md btn-default" href="/company/list/customer/"> <span class="glyphicon glyphicon-user"> </span> Customers </a></h4>
-        <p>Get a listing of your customers, their comments and other details.</p>
-      </div>
-      <div class="col-md-2">
-        <h4> <a class="btn btn-md btn-default" href="/company/profile"> <span class="glyphicon glyphicon-wrench"> </span> Account </a></h4>
-        <p>Manage your Money Manager account. </p>
-      </div>
-    </div>
   </div>
 </div>

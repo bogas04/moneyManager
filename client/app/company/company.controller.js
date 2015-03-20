@@ -54,7 +54,7 @@ angular.module('moneyManagerApp')
               $scope.currentTerm = data.terms[i];
               if($location.path().indexOf('logs/add') > -1) {
                 $scope.addThisLog.amount = $scope.computeLogAmount(data.terms[i]);
-                $scope.addThisLog.date = $scope.stringifyDate(new Date().getTime());
+                $scope.addThisLog.date = $scope.slashifyDate(new Date().getTime());
               }
               break;
             }
@@ -549,12 +549,16 @@ angular.module('moneyManagerApp')
     var termDate = new Date(term.start_date);
     var endDate = new Date(term.end_date);
     var today = new Date();
-    return today.getDate() === (termDate.getDate() - inDays);
-    return today.getDate() === (termDate.getDate() - inDays) &&
-           today.getMonth() > termDate.getMonth() &&
-           today.getMonth() < endDate.getMonth() &&
-           today.getYear() >= termDate.getYear() &&
-           today.getYear() <= termDate.getYear();
+    var lastDate = null;
+    for(var i = 0;i < term.logs.length; i++) {
+      if(term.logs[i].type === 'credit') {
+        lastDate = term.logs[i].date;
+      }
+    }
+    return  (today.getDate() === termDate.getDate() - inDays) && // Term date is yesterday today or tomorrow
+            (!lastDate || // and didn't ever credited
+            lastDate.getMonth() !== today.getMonth()); // Or didn't credit this month
+           
   };
   $scope.roundTo = function(number, precision) {
     if(!number) { return number; }
@@ -592,9 +596,14 @@ angular.module('moneyManagerApp')
 
     return logs;
   };
+  $scope.slashifyDate = function(str) {
+    var d = new Date(str);
+    if(d === "Invalid Date") { return null; }
+    return d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
+  };
   $scope.stringifyDate = function(str) {
     var d = new Date(str);
-    if(d == "Invalid Date") { return null; }
+    if(d === "Invalid Date") { return null; }
     var months = ['January', 'Feburary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
   };

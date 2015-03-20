@@ -7,7 +7,7 @@ angular.module('moneyManagerApp')
       'link': '/'
     }];
 
-    $scope.isCollapsed = true;
+    $scope.isCollapsed = { primary :true, secondary : true };  
     $scope.isLoggedIn = function () {
       return Auth.isLoggedIn() || AuthCompany.isLoggedIn();
       //return AuthCompany.isLoggedIn();

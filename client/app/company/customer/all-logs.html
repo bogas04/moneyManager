@@ -24,8 +24,8 @@
         <tr ng-repeat="l in getSortedLogsWithBalance(currentCustomer)">
           <td><a href="/company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}/">{{l.termTitle}}</a></td>
           <td>{{stringifyDate(l.date)}}</td>
-          <td>{{l.type === 'credit' ? roundTo(l.amount) : ""}}</td>
-          <td>{{l.type === 'debit' ? roundTo(l.amount) : ""}}</td>
+          <td class="{{l.type==='credit'?'success':''}}">{{l.type === 'credit' ? "₹" + roundTo(l.amount) : ""}}</td>
+          <td class="{{l.type==='debit'?'danger':''}}">{{l.type === 'debit' ? "₹" + roundTo(l.amount) : ""}}</td>
           <td>₹ {{l.balance}}</td>
         </tr>
       </tbody>

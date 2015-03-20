@@ -1,10 +1,26 @@
-.member-list {
-  overflow:auto;
-  max-height:160px;
-  padding-right:50px;
-  font-size: 130%;
+.reminder {
+  margin: 5px 15px !important;
 }
-.member-list .btn-inline {
-  display: inline !important;
-  float: right;
+@media screen and (max-width: 740px) {
+  .reminder {
+    height: 90px !important;
+  }
+  .reminder .pull-right {
+    float : none !important;
+    margin-top: 5px;
+    width: 100%;
+  }
+  .reminder .pull-right .btn {
+    float:left;
+    width: 33%;
+    margin:0px -2px;
+    border: none;
+    border-radius : 0px;
+    padding: 10px 0px;
+  }
+}
+@media screen and (max-width: 495px) {
+  .reminder {
+    height: 115px !important;
+  } 
 }
