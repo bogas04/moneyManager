@@ -1,6 +1,25 @@
 'use strict';
 
 angular.module('moneyManagerApp')
+.filter('hasTerm', function () {
+ return function(customers, term) {
+    term = term ? String.trim(term) : "";
+    if(term === "" || !customers) { 
+      return customers;
+    }
+    var customersWithTerm = [];
+    for(var i = 0; i < customers.length; i++) { // For each customer
+      var found = false;
+      for(var j = 0; !found && j < customers[i].terms.length; j++) { // For each term
+        if(String.toLowerCase(customers[i].terms[j].title).indexOf(String.toLowerCase(term)) > -1) {
+          found = true;
+          customersWithTerm.push(customers[i]);
+        }
+      }
+    }
+    return customersWithTerm;
+  };
+})
 .controller('CompanyCtrl', function ($routeParams, $scope, $location, $http, AuthCompany, Company) {
   AuthCompany.isLoggedInAsync(function (loggedIn) {
     if(!loggedIn) {
@@ -435,7 +454,8 @@ angular.module('moneyManagerApp')
    * Helper Functions
    */
   $scope.capInit = function (str) { return (!str) ? str : str[0].toUpperCase() + str.slice(1); }; 
-  $scope.creditOrDebit = function(str) { console.log('called'); return str === 'credit'? 'danger' : 'success'; };
+  $scope.creditOrDebit = function(str) { return str === 'credit'? 'danger' : 'success'; };
+  $scope.isCredit = function(logType) { return logType === 'credit'?true:false; };
   $scope.computeBalance = function (term) {
     var balance = 0;
     for(var i = 0; i < term.logs.length; i++) {
@@ -543,6 +563,34 @@ angular.module('moneyManagerApp')
     if(Math.abs(number) < 1) { return 0; }
     precision = precision || 2;
     return number.toPrecision((_number + "").length + precision);
+  };
+  $scope.getSortedLogsWithBalance = function(customer) {
+    var logs = [];
+    if(!customer || !customer.terms) {
+      return logs;
+    }
+    
+    // Accumulate
+    for(var i = 0; i < customer.terms.length; i++) {
+      for(var j = 0; j < customer.terms[i].logs.length; j++) {
+        customer.terms[i].logs[j].termTitle = customer.terms[i].title;
+        logs.push(customer.terms[i].logs[j]);
+      }
+    };
+    
+    // Sort
+    Array.sort(logs, function(a, b) {
+      return a.date > b.date;
+    });
+    
+    // Add Balance
+    var balance = 0;
+    for(i = 0; i < logs.length; i++) {
+      balance = balance + ($scope.isCredit(logs[i].type)?1:-1)*logs[i].amount;
+      logs[i].balance = $scope.roundTo(balance);
+    }
+
+    return logs;
   };
   $scope.stringifyDate = function(str) {
     var d = new Date(str);

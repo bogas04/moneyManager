@@ -33,7 +33,7 @@
           <td><a href="company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}">{{t.title}}</a></td>
           <td>{{stringifyDate(t.start_date)}}</td>
           <td>{{stringifyDate(t.end_date) || "N/A"}}</td>
-          <td>{{roundTo(t.amount || t.logs[0].amount || "N/A")}}</td>
+          <td>₹ {{roundTo(t.amount || t.logs[0].amount || "N/A")}}</td>
           <td>{{capInit(t.interest.type) || "N/A"}} {{ t.interest.rate?" @ " + t.interest.rate + " %": ""}}</td>
           <td>{{t.installments.count + " " + t.installments.duration.parameter}}</td>
           <td>₹ {{computeBalance(t)}} </td>

@@ -10,6 +10,7 @@
   </ol>
   <div class="row container">      
     <div class="form-group form-inline">
+      <a href="/company/create/customer" class="btn btn-primary btn-md"> Add Customer </a>
       <input type="text" class="form-control" placeholder="Search by Customer" ng-model="filterCustomers"/>
       <input type="text" class="form-control" placeholder="Search by Term" ng-model="filterTerms"/>
     </div>
@@ -22,18 +23,19 @@
           <th>Operations</th>
         </tr>
       </thead>
-      <tbody ng-repeat="c in customers | filter : filterCustomers">
+      <tbody ng-repeat="c in customers| filter : { 'name' : filterCustomers } | hasTerm : filterTerms">
         <tr style="background-color:#F2F2F2;">
           <td colspan="3" style="text-align:center;font-size:120%;"><a href="/company/profile/customer/{{c._id}}/">{{c.name}}</a></strong></td>
           <td>
             <a href="/company/profile/customer/{{c._id}}/terms/add">Add Term</a> 
             |
             <a href="/company/profile/customer/{{c._id}}">Edit </a> 
+          </td>
         </tr>
-        <tr ng-if="c.terms.length != 0" ng-repeat="t in c.terms | filter : filterTerms">
+        <tr ng-if="c.terms.length != 0" ng-repeat="t in c.terms | filter : { 'title' : filterTerms} | orderBy : 'start_date'">
           <td><a href="/company/profile/customer/{{c._id}}/terms/{{t.title}}/">{{t.title}}</a></td>
           <td>{{stringifyDate(t.start_date)}}</td>
-          <td>{{computeBalance(t)}}</td>
+          <td>₹ {{computeBalance(t)}}</td>
           <td><a href="company/profile/customer/{{c._id}}/terms/{{t.title}}/logs/add" class="btn btn-xs btn-info">Add Logs</a> <a href="company/profile/customer/{{c._id}}/terms/{{t.title}}/logs" class="btn btn-xs btn-warning">View Logs</a>
         </tr>
       </tbody>

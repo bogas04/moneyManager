@@ -20,13 +20,13 @@
           <th>Balance</th>
         </tr>
       </thead>
-      <tbody ng-repeat="t in currentCustomer.terms">
-        <tr ng-repeat="l in logsWithBalance(t.logs)">
-          <td><a href="/company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}/">{{t.title}}</a></td>
+      <tbody>
+        <tr ng-repeat="l in getSortedLogsWithBalance(currentCustomer)">
+          <td><a href="/company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}/">{{l.termTitle}}</a></td>
           <td>{{stringifyDate(l.date)}}</td>
           <td>{{l.type === 'credit' ? roundTo(l.amount) : ""}}</td>
           <td>{{l.type === 'debit' ? roundTo(l.amount) : ""}}</td>
-          <td>{{l.balance}}</td>
+          <td>₹ {{l.balance}}</td>
         </tr>
       </tbody>
     </table>
