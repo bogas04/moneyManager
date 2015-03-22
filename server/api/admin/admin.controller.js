@@ -58,6 +58,9 @@ exports.me = function(req, res, next) {
 // Creates a new admin in the DB.
 exports.create = function(req, res) {
   var newAdmin = new Admin(req.body);
+  //if(req.body.phone && req.body.phone.length !== 10) {
+    //res.json(invalid);
+  //}
   newAdmin.isSuper = false;
   newAdmin.save(function(err, admin) {
     if(err) return validationError(res, err);

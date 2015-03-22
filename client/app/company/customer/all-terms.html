@@ -32,7 +32,7 @@
             <a href="/company/profile/customer/{{c._id}}">Edit </a> 
           </td>
         </tr>
-        <tr ng-if="c.terms.length != 0" ng-repeat="t in c.terms | filter : { 'title' : filterTerms} | orderBy : 'start_date'">
+        <tr ng-if="c.terms.length != 0" ng-repeat="t in c.terms | filter : { 'title' : filterTerms} | orderBy : 'start_date':true">
           <td><a href="/company/profile/customer/{{c._id}}/terms/{{t.title}}/">{{t.title}}</a></td>
           <td>{{stringifyDate(t.start_date)}}</td>
           <td>₹ {{computeBalance(t)}}</td>

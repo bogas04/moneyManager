@@ -25,26 +25,35 @@ $('.input-group.date').datepicker({
   <div class="row container"> 
     <h3> Enter Log Details </h3> 
     <form class="form" name="form" ng-submit="addLog(form)" novalidate>
-      <div class="form-group">           
+      <div class="form-group" ng-class="{ 'has-success': form.date.$valid && submitted, 'has-error': form.date.$invalid && submitted }">           
         <label>Log Date</label>
         <div class="input-group date">
           <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span> 
-          <input type="text" class="form-control" ng-model="addThisLog.date" placeholder="Date of log"/>
+          <input type="text" name="date" class="form-control" ng-model="addThisLog.date" placeholder="Date of log" required/>
         </div>       
+        <p class="help-block" ng-show="form.date.$error.required && submitted">
+          Date is required
+        </p>
       </div>
-      <div class="form-group">           
+      <div class="form-group" ng-class="{ 'has-success': form.type.$valid && submitted, 'has-error': form.type.$invalid && submitted }">           
         <label>Log Type</label>
-        <select class="form-control" name="addThisLog.type" ng-model="addThisLog.type" required>
+        <select class="form-control" name="type" ng-model="addThisLog.type" required>
           <option value="credit"> Credit </option>
           <option value="debit"> Debit </option>
         </select>
+        <p class="help-block" ng-show="form.type.error.required && submitted">
+          Date is required
+        </p>
       </div>
-      <div class="form-group">           
+      <div class="form-group" ng-class="{ 'has-success': form.amount.$valid && submitted, 'has-error': form.amount.$invalid && submitted }">           
         <label>Log Amount</label>
         <div class="input-group">
           <span class="input-group-addon">₹</span>
-          <input type="text" class="form-control" ng-model="addThisLog.amount" placeholder="Amount Paid/Given" />
+          <input type="text" class="form-control" name="amount" ng-model="addThisLog.amount" placeholder="Amount Paid/Given" required/>
         </div>       
+        <p class="help-block" ng-show="form.amount.$error.required && submitted">
+          Amount is required
+        </p>
       </div>
       <p class="help-block"> {{ message }} </p>
       <button class="btn btn-lg btn-primary" type="submit">Add</button>

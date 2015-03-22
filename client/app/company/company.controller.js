@@ -37,7 +37,7 @@ angular.module('moneyManagerApp')
   $scope.memberCount = [];
   $scope.addThisCommitteeLog = { takenBy : null };
   $scope.createThisCommittee = { duration : { parameter : 'months' }, members : { list : [], count : 0 } };
-  $scope.addThisTerm = { interest : { type : 'simple'}, installments : { duration : { parameter : 'months' }}};
+  $scope.addThisTerm = { interest : { type : 'simple', rate : 0 }, installments : { duration : { parameter : 'months', count : 0}, count : 0}};
   $scope.addThisLog = { type  : 'credit'};
   /* 
    * Filling Scopes
@@ -131,6 +131,35 @@ angular.module('moneyManagerApp')
       console.log(data, status, headers, config);
     });
   }
+  // Term Create
+  $scope.updateTermDuration = function() {
+    console.log($scope.addThisTerm);
+    if(!$scope.addThisTerm.start_date || 
+       !$scope.addThisTerm.end_date ||
+       $scope.addThisTerm.start_date.indexOf('/') < 0 || 
+       $scope.addThisTerm.end_date.indexOf('/') < 0 ||
+       $scope.addThisTerm.installments.count < 1) { 
+      return; 
+    }
+    var start = $scope.toDate($scope.addThisTerm.start_date);
+    var end = $scope.toDate($scope.addThisTerm.end_date);
+    var nInstallments = $scope.addThisTerm.installments.count;
+    var diff = end.getTime() - start.getTime();
+    var totalDays = Math.ceil(diff/(1000*60*60*24));
+    var daysInEachInstallment = Math.ceil(totalDays/nInstallments);
+    console.log(daysInEachInstallment);
+    if(daysInEachInstallment < 30) {
+      $scope.addThisTerm.installments.duration.count = Math.floor(daysInEachInstallment);
+      $scope.addThisTerm.installments.duration.parameter = 'days';
+    } else if(daysInEachInstallment < 365) {
+      $scope.addThisTerm.installments.duration.count = Math.floor(daysInEachInstallment/30);
+      $scope.addThisTerm.installments.duration.parameter = 'months';
+    } else {
+      $scope.addThisTerm.installments.duration.count = Math.floor(daysInEachInstallment/365);
+      $scope.addThisTerm.installments.duration.parameter = 'years';
+
+    }
+  };
   /*
    * Committee Functions
    */
@@ -307,6 +336,7 @@ angular.module('moneyManagerApp')
       .error( function (data, status, headers, config){
         console.log(data, status, headers, config);
       });
+    } else {
     }
   };
 
@@ -374,6 +404,14 @@ angular.module('moneyManagerApp')
 
   $scope.createCustomer = function(form) {
     $scope.submitted = true;
+    if(form.phone.$modelValue) {
+      if(form.phone.$modelValue.length != 10) {
+        form.phone.$setValidity('invalid', false);
+        return;
+      } else {
+        form.phone.$setValidity('invalid', true);
+      }
+    }
     if(form.$valid) {
       $http.post('/api/company/customers', $scope.createThisCustomer)
         .success( function (data, status, headers, config){
@@ -454,6 +492,25 @@ angular.module('moneyManagerApp')
    * Helper Functions
    */
   $scope.capInit = function (str) { return (!str) ? str : str[0].toUpperCase() + str.slice(1); }; 
+  
+  // Reminder Helper Function
+  $scope.isToBeCollected = function(term, inDays) {
+    var termDate = new Date(term.start_date);
+    var endDate = new Date(term.end_date);
+    var today = new Date();
+    var lastDate = null;
+    for(var i = 0;i < term.logs.length; i++) {
+      if(term.logs[i].type === 'credit') {
+        lastDate = term.logs[i].date;
+      }
+    }
+    return  (today.getDate() === termDate.getDate() - inDays) && // Term date is yesterday today or tomorrow
+            (!lastDate || // and didn't ever credited
+            lastDate.getMonth() !== today.getMonth()); // Or didn't credit this month
+           
+  };
+  
+  // Term Helper Functions
   $scope.creditOrDebit = function(str) { return str === 'credit'? 'danger' : 'success'; };
   $scope.isCredit = function(logType) { return logType === 'credit'?true:false; };
   $scope.computeBalance = function (term) {
@@ -467,6 +524,62 @@ angular.module('moneyManagerApp')
     }
     return $scope.roundTo(balance);
   }; 
+  
+  // Log Helper Functions
+  $scope.logsWithBalance = function(logs) {
+    if(!logs) { return logs; }
+    var balance = 0;
+    for(var i = 0; i < logs.length; i++) {
+      if(logs[i].type === 'credit') {
+        balance += logs[i].amount;
+      } else {
+        balance -= logs[i].amount;
+      }
+      logs[i].balance = $scope.roundTo(balance);
+    }
+    return logs;
+  };
+  $scope.computeLogAmount = function(term) {
+    return $scope.roundTo(term.amount * term.interest.rate * 0.01);
+  };
+  $scope.roundTo = function(number, precision) {
+    if(!number) { return number; }
+    var _number = parseInt(number);
+    if(_number === number) { return number; }
+    if(Math.abs(number) < 1) { return 0; }
+    precision = precision || 2;
+    return number.toPrecision((_number + "").length + precision);
+  };
+  $scope.getSortedLogsWithBalance = function(customer) {
+    var logs = [];
+    if(!customer || !customer.terms) {
+      return logs;
+    }
+    
+    // Accumulate
+    for(var i = 0; i < customer.terms.length; i++) {
+      for(var j = 0; j < customer.terms[i].logs.length; j++) {
+        customer.terms[i].logs[j].termTitle = customer.terms[i].title;
+        logs.push(customer.terms[i].logs[j]);
+      }
+    };
+    
+    // Sort
+    Array.sort(logs, function(a, b) {
+      return a.date > b.date;
+    });
+    
+    // Add Balance
+    var balance = 0;
+    for(i = 0; i < logs.length; i++) {
+      balance = balance + ($scope.isCredit(logs[i].type)?1:-1)*logs[i].amount;
+      logs[i].balance = $scope.roundTo(balance);
+    }
+
+    return logs;
+  };
+
+  // Committee Helper Functions
   $scope.hasTaken = function(id) {
     for(var i = 0; i < $scope.currentCommittee.logs.length; i++) {
       if($scope.currentCommittee.logs[i].takenBy === id) {
@@ -524,77 +637,16 @@ angular.module('moneyManagerApp')
     }
     console.log($scope.createThisCommittee.members.list);
   };
+
+  // Date Helper Functions
   $scope.toDate = function (str) {
     // Return date object a dd/mm/yyyy string
     var d = str.split('/');
     return new Date(d[2], d[1] - 1, d[0]);
   };
-  $scope.logsWithBalance = function(logs) {
-    if(!logs) { return logs; }
-    var balance = 0;
-    for(var i = 0; i < logs.length; i++) {
-      if(logs[i].type === 'credit') {
-        balance += logs[i].amount;
-      } else {
-        balance -= logs[i].amount;
-      }
-      logs[i].balance = $scope.roundTo(balance);
-    }
-    return logs;
-  };
-  $scope.computeLogAmount = function(term) {
-    return $scope.roundTo(term.amount * term.interest.rate * 0.01);
-  };
-  $scope.isToBeCollected = function(term, inDays) {
-    var termDate = new Date(term.start_date);
-    var endDate = new Date(term.end_date);
-    var today = new Date();
-    var lastDate = null;
-    for(var i = 0;i < term.logs.length; i++) {
-      if(term.logs[i].type === 'credit') {
-        lastDate = term.logs[i].date;
-      }
-    }
-    return  (today.getDate() === termDate.getDate() - inDays) && // Term date is yesterday today or tomorrow
-            (!lastDate || // and didn't ever credited
-            lastDate.getMonth() !== today.getMonth()); // Or didn't credit this month
-           
-  };
-  $scope.roundTo = function(number, precision) {
-    if(!number) { return number; }
-    var _number = parseInt(number);
-    if(_number === number) { return number; }
-    if(Math.abs(number) < 1) { return 0; }
-    precision = precision || 2;
-    return number.toPrecision((_number + "").length + precision);
-  };
-  $scope.getSortedLogsWithBalance = function(customer) {
-    var logs = [];
-    if(!customer || !customer.terms) {
-      return logs;
-    }
-    
-    // Accumulate
-    for(var i = 0; i < customer.terms.length; i++) {
-      for(var j = 0; j < customer.terms[i].logs.length; j++) {
-        customer.terms[i].logs[j].termTitle = customer.terms[i].title;
-        logs.push(customer.terms[i].logs[j]);
-      }
-    };
-    
-    // Sort
-    Array.sort(logs, function(a, b) {
-      return a.date > b.date;
-    });
-    
-    // Add Balance
-    var balance = 0;
-    for(i = 0; i < logs.length; i++) {
-      balance = balance + ($scope.isCredit(logs[i].type)?1:-1)*logs[i].amount;
-      logs[i].balance = $scope.roundTo(balance);
-    }
-
-    return logs;
+  $scope.isDate = function (dateString) {
+    var validDate = /^(([0][1-9])|([1-2][0-9])|([3][0-1]))\/(([0][1-9])|([1][0-2]))\/[0-9]{4}$/; 
+    return dateString &&validDate.test(dateString);
   };
   $scope.slashifyDate = function(str) {
     var d = new Date(str);
