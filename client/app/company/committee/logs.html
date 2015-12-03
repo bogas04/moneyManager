@@ -36,7 +36,7 @@
         <tr ng-repeat="l in currentCommittee.logs">
           <td>{{stringifyDate(l.date)}}</td>
           <td>{{l.bidAmount}}</td>
-          <td>{{l.takenBy}}</td>
+          <td><a href="/company/profile/customer/{{l.takenBy}}">{{getCommitteeMemberDetails(l.takenBy).name}}</a></td>
         </tr>
       </tbody>
     </table>

@@ -18,7 +18,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="c in admin.companies">
-        <td> {{c.name}} </td>
+        <td> <a href="/admin/profile/company/{{c._id}}">{{c.name}}</a></td>
         <td> {{c.username}} </td>
         <td> {{c.owner.name}} </td>
         <td> <a href="mailto:{{c.owner.email}}">{{c.owner.email}}</a> </td>

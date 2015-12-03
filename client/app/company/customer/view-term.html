@@ -11,7 +11,7 @@ $('.input-group.date').datepicker({
 </script>
 <div class="container">
   <div class="page-header">
-    <h1>Term Details</h1>
+    <h1>{{currentTerm.title}} Term</h1>
   </div>
   <ol class="breadcrumb">  
     <li><a href="company">Home</a></li>
@@ -24,56 +24,52 @@ $('.input-group.date').datepicker({
     <h3> Term Details </h3> 
     <dl class="dl-horizontal">
       <dt>Title : </dt> <dd> {{currentTerm.title || "N/A"}}</dd>
-      <dt>Start Date : </dt> <dd> {{stringifyDate(currentTerm.start_date)}}</dd>
-      <dt>Last Date : </dt> <dd> {{stringifyDate(currentTerm.end_date) || "N/A"}}</dd>
+      <dt>Start Date : </dt> <dd> {{stringifyDate(currentTerm.startDate)}}</dd>
+      <dt>Last Date : </dt> <dd> {{stringifyDate(computeEndDate((currentTerm.startDate), currentTerm.duration)) || "N/A"}}</dd>
       <dt>Amount : </dt> <dd> {{roundTo(currentTerm.amount || currentTerm.logs[0].amount) || "N/A"}}</dd>
-      <div ng-if="currentTerm.installments && currentTerem.installments.duration">
-      <dt>Installments : </dt> <dd> {{currentTerm.installments.count || "N/A"}}</dd>
-      <dt>Installment Duration : </dt> <dd> {{currentTerm.installments.duration.count || "N/A"}} {{currentTerm.installments.duration.parameter || ""}} </dd>
-      </div>
       <div ng-if="currentTerm.interest && currentTerm.interest.rate">
-      <dt>Interest Rate : </dt> <dd> {{currentTerm.interest.rate + " % " || "N/A"}}</dd>
-      <dt>Interest Type : </dt> <dd> {{capInit(currentTerm.interest.type) || "N/A"}}</dd>
+        <dt>Interest Rate : </dt> <dd> {{currentTerm.interest.rate + " % " || "N/A"}}</dd>
+        <dt>Interest Type : </dt> <dd> {{capInit(currentTerm.interest.type) || "N/A"}} per {{currentTerm.interest.per}}</dd>
       </div>
     </dl>
     <div class="form-group">
       <button type="button" class="btn btn-danger btn-md" data-toggle="modal" ng-click="deleteTerm(currentTerm.title)">Delete Term</button>
       <a href="/company/profile/customer/{{currentCustomer._id}}/terms/{{currentTerm.title}}/logs" type="button" class="btn btn-primary btn-md">View Logs</a>
     </div>
-<!--
-    <h3> Update Details </h3>
-    <form class="form" name="form" ng-submit="updateTerm(form)" novalidate>
+    <!--
+      <h3> Update Details </h3>
+      <form class="form" name="form" ng-submit="updateTerm(form)" novalidate>
       <div class="form-group">           
-        <label>Term Name</label>
-        <input placeholder="Enter your Term Name" type="text" name="name" class="form-control" ng-model="currentTerm.title" required/>
+      <label>Term Name</label>
+      <input placeholder="Enter your Term Name" type="text" name="name" class="form-control" ng-model="currentTerm.title" required/>
       </div>
       <div class="form-group">           
-        <label>Term Start Date</label>
-        <div class="input-group date">
-          <input type="text" class="form-control" ng-model="currentTerm.start_date" placeholder="Enter start date of this term" ><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-        </div>       
+      <label>Term Start Date</label>
+      <div class="input-group date">
+      <input type="text" class="form-control" ng-model="currentTerm.startDate" placeholder="Enter start date of this term" ><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+      </div>       
       </div>
       <div class="form-group form-inline">           
-        <label>Interest Rate</label>
-        <input placeholder="Enter your Interest Rate" type="text" name="interest.rate" class="form-control" ng-model="currentTerm.interest.rate" />
-        <label>Interest Type</label>
-        <select name="interest.type" class="form-control" ng-model="currentTerm.interest.type">
-          <option value="simple"> Simple </option>
-          <option value="compound"> Compound  </option>
-        </select>
+      <label>Interest Rate</label>
+      <input placeholder="Enter your Interest Rate" type="text" name="interest.rate" class="form-control" ng-model="currentTerm.interest.rate" />
+      <label>Interest Type</label>
+      <select name="interest.type" class="form-control" ng-model="currentTerm.interest.type">
+      <option value="simple"> Simple </option>
+      <option value="compound"> Compound  </option>
+      </select>
       </div>
       <div class="form-group form-inline">           
-        <label>Installment Amount</label>
-        <input placeholder="Enter your Installment Amount" type="text" name="installments.amount" class="form-control" ng-model="currentTerm.installments.amount" required/>
+      <label>Installment Amount</label>
+      <input placeholder="Enter your Installment Amount" type="text" name="installments.amount" class="form-control" ng-model="currentTerm.installments.amount" required/>
       </div>
       <div class="form-group form-inline">
-        <label>Installment Duration</label>
-        <input placeholder="Enter your Installment Duration" type="text" name="installments.duration.count" class="form-control" ng-model="currentTerm.installments.duration.count" required/>
-        <select  name="installments.duration.parameter" ng-model="currentTerm.installments.duration.parameter" class="form-control">
-          <option value="days"> Days </option>
-          <option value="months"> Month </option>
-          <option value="years"> Years </option>
-        </select>
+      <label>Installment Duration</label>
+      <input placeholder="Enter your Installment Duration" type="text" name="installments.duration.count" class="form-control" ng-model="currentTerm.installments.duration.count" required/>
+      <select  name="installments.duration.parameter" ng-model="currentTerm.installments.duration.parameter" class="form-control">
+      <option value="days"> Days </option>
+      <option value="months"> Month </option>
+      <option value="years"> Years </option>
+      </select>
       </div>
       <p class="help-block"> {{ message }} </p>
       <button class="btn btn-lg btn-primary" type="submit">Update</button>

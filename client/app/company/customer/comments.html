@@ -1,0 +1,33 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div ng-include="'components/navbar/navbar-secondary.html'"></div>
+<div class="container">
+  <div class="page-header">
+    <h1><span class="glyphicon glyphicon-user"></span> {{currentCustomer.name}}'s Comments</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="company/list/customer/">Customer List</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}">Customer Profile</a></li>
+    <li><a href="#">Customer Comments</a></li>
+  </ol>
+  <div class="row container"> 
+    <div class="form-group">
+      <a href="/company/profile/customer/{{currentCustomer._id}}/comments/add" type="button" class="btn btn-primary btn-md">Add Comment</a>
+    </div>
+    <div class="panel panel-default" ng-repeat="comment in currentCustomer.comments">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{stringifyDate(comment.date)}}<span class="btn btn-xs btn-danger pull-right" ng-click="deleteComment(comment.comment.toString())">&times; Delete</span></h3>
+      </div>
+      <div class="panel-body">
+        {{comment.comment.toString()}}
+      </div>
+    </div>
+    <div ng-show="currentCustomer.comments.length===0">
+      <div class="jumbotron">
+        <h1>:( No Comments found !</h1>
+        <p>Comments help you place markers on your customer.</p>
+        <p><a class="btn btn-primary btn-lg" href="/company/profile/customer/{{currentCustomer._id}}/comments/add" role="button">Add a comment</a></p>
+      </div>
+    </div>
+  </div> 
+</div>

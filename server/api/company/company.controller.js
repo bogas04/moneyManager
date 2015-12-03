@@ -97,7 +97,7 @@ exports.create_agent = function(req, res) {
   toCreate.company = company._id;
   Agent.create(toCreate, function(err, agent) {
     if(err) { return handleError(res, err); }
-    return res.json(201, {error : false, msg : "Agent added", obj : agent.profile}); 
+    return res.json(201, {error : false, msg : "Agent added", data : agent.profile}); 
   });
 };
 
@@ -147,6 +147,7 @@ exports.update_customer = function(req, res) {
     customer.address = updatedCustomer.address || customer.address;
     customer.visible_to = updatedCustomer.visible_to || customer.visible_to;
     customer.committees = updatedCustomer.committees || customer.committees;
+    customer.comments = updatedCustomer.comments || customer.comments;
     customer.save(function(err) {
       if(err) return validationError(res, err);
       res.send(200);

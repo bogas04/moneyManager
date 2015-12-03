@@ -18,14 +18,16 @@
         <tr>
           <th>Name</th>
           <th>Phone</th>
-          <th>Terms</th>
+          <th>Operations</th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="c in customers | filter : filterCustomer">
           <td><a href="/company/profile/customer/{{c._id}}/logs">{{c.name}}</a></td>
           <td>{{c.phone}}</td>
-          <td class="text-center"><a href="/company/profile/customer/{{c._id}}/terms">View {{c.terms.length}} term(s)</a></td>
+          <td class="text-center">
+            <a href="company/profile/customer/{{c._id}}/comments">View Comments</a> |
+            <a href="/company/profile/customer/{{c._id}}/terms">View {{c.terms.length}} term(s)</a></td>
         </tr>
       </tbody>
     </table>

@@ -11,7 +11,7 @@ $('.input-group.date').datepicker({
 </script>
 <div class="container">
   <div class="page-header">
-    <h1>Add Log</h1>
+    <h1>New Log for {{currentCustomer.name}}</h1>
   </div>
   <ol class="breadcrumb">  
     <li><a href="company">Home</a></li>
@@ -23,7 +23,7 @@ $('.input-group.date').datepicker({
     <li><a href="#">Add Log</a></li>
   </ol>
   <div class="row container"> 
-    <h3> Enter Log Details </h3> 
+    <h3> Enter Log Details for {{currentTerm.title}} term of {{currentCustomer.name}}</h3> 
     <form class="form" name="form" ng-submit="addLog(form)" novalidate>
       <div class="form-group" ng-class="{ 'has-success': form.date.$valid && submitted, 'has-error': form.date.$invalid && submitted }">           
         <label>Log Date</label>

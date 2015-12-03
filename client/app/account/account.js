@@ -11,6 +11,10 @@ angular.module('moneyManagerApp')
         templateUrl: 'app/account/signup/signup.html',
         controller: 'SignupCtrl'
       })
+      .when('/login-agent', {
+        templateUrl: 'app/account/login-agent/login.html',
+        controller: 'LoginAgentCtrl'
+      })
       .when('/login-company', {
         templateUrl: 'app/account/login-company/login.html',
         controller: 'LoginCompanyCtrl'

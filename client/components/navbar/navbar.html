@@ -18,11 +18,13 @@
       <ul class="nav navbar-nav navbar-right">
         <li ng-show="isLoggedIn() && isAdmin()"><a href="/admin">Dashboard</a></li>
         <li ng-show="isLoggedIn() && isCompany()"><a href="/company">Dashboard</a></li>
+        <li ng-show="isLoggedIn() && isAgent()"><a href="/agent">Dashboard</a></li>
 
         <li ng-hide="isLoggedIn()" ><a href="/login-company">Login</a></li>
 
         <li ng-show="isLoggedIn() && isAdmin()"><a href="#">Hello, {{ getCurrentAdmin().name.split(' ')[0] }} !</a> </li>
         <li ng-show="isLoggedIn() && isCompany()"><a href="#">Hello, {{ getCurrentCompany().owner.name.split(' ')[0] }} !</a> </li>
+        <li ng-show="isLoggedIn() && isAgent()"><a href="#">Hello, {{ getCurrentAgent().name.split(' ')[0] }} !</a> </li>
 
         <li ng-show="isLoggedIn()" ng-class="{active: isActive('/logout')}"><a href="" ng-click="logout()">Logout</a></li>
       </ul>

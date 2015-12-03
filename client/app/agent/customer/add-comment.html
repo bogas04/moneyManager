@@ -1,0 +1,26 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div ng-include="'components/navbar/navbar-secondary-agent.html'"></div>
+<div class="container">
+  <div class="page-header">
+    <h1>Add Comment</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="company/list/customer/">Customer List</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}">Customer Profile</a></li>
+    <li><a href="#">Add Comment</a></li>
+  </ol>
+  <div class="row container"> 
+    <h3> Comment for {{currentCustomer.name}}</h3>
+    <form class="form" name="form" ng-submit="addComment(form)" novalidate>
+      <div class="form-group" ng-class="{ 'has-success': form.comment.$valid && submitted, 'has-error': form.comment.$invalid && submitted }">            
+        <textarea rows="5" placeholder="Enter your Comment" type="text" name="comment" class="form-control" ng-model="addThisComment" required/></textarea>
+        <p class="help-block" ng-show="form.comment.$error.required && submitted">
+          Comment is required
+        </p>
+      </div>
+      <p class="help-block"> {{ message }} </p>
+      <button class="btn btn-lg btn-primary" type="submit">Add</button>
+    </form>
+  </div> 
+</div>

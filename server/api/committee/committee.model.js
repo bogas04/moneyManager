@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var CommitteeSchema = new Schema({
-  start_date : Date,
+  startDate : Date,
   title : { type : String, unique : true },
   company : { type : Schema.Types.ObjectId, ref : 'Company'},
   amount : Number,

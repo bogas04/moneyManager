@@ -31,11 +31,11 @@
       <tbody>
         <tr ng-repeat="t in currentCustomer.terms | filter : filterTerms"> 
           <td><a href="company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}">{{t.title}}</a></td>
-          <td>{{stringifyDate(t.start_date)}}</td>
-          <td>{{stringifyDate(t.end_date) || "N/A"}}</td>
+          <td>{{stringifyDate(t.startDate)}}</td>
+          <td>{{stringifyDate(computeEndDate((t.startDate), t.duration)) || "N/A"}}</td>
           <td>₹ {{roundTo(t.amount || t.logs[0].amount || "N/A")}}</td>
-          <td>{{capInit(t.interest.type) || "N/A"}} {{ t.interest.rate?" @ " + t.interest.rate + " %": ""}}</td>
-          <td>{{t.installments.count + " " + t.installments.duration.parameter}}</td>
+          <td>{{capInit(t.interest.type) || "N/A"}} {{ t.interest.rate?" @ " + t.interest.rate + " % / " + t.interest.per : ""}}</td>
+          <td>{{computeInstallmentCount((t.startDate), t.duration, t.installments) || "N/A"}}</td>
           <td>₹ {{computeBalance(t)}} </td>
           <td><a href="company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}/logs/add" class="btn btn-xs btn-info">Add</a> <a href="company/profile/customer/{{currentCustomer._id}}/terms/{{t.title}}/logs" class="btn btn-xs btn-warning">View</a>
         </tr>

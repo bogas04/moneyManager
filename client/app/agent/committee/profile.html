@@ -1,0 +1,52 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div ng-include="'components/navbar/navbar-secondary-agent.html'"></div>
+<div class="container">
+  <div class="page-header">
+    <h1>Committee Profile</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="company/list/committee/">Committee List</a></li>
+    <li><a href="#">Committee Profile</a></li>
+  </ol>
+  <div class="row container"> 
+    <h3> Committee Details </h3> 
+    <dl class="dl-horizontal">
+      <dt>Title : </dt> <dd> {{currentCommittee.title || "N/A"}}</dd>
+      <dt>Start Date : </dt> <dd> {{stringifyDate(currentCommittee.start_date) || "N/A"}}</dd>
+      <dt>Amount : </dt> <dd> {{currentCommittee.amount}}</dd>
+      <dt>Duration : </dt> <dd> {{currentCommittee.duration.count + " " + currentCommittee.duration.parameter}} </dd>
+      <dt>Members : </dt> <dd> {{currentCommittee.members.count}} </dd>
+    </dl>
+    <button type="button" class="btn btn-danger btn-md" data-toggle="modal" ng-click="deleteCommittee(currentCommittee)">Delete Committee</button>
+    <a href="/company/profile/committee/{{currentCommittee._id}}/logs" type="button" class="btn btn-primary btn-md">View Logs</a>
+    <a href="/company/profile/committee/{{currentCommittee._id}}/logs/add" type="button" class="btn btn-primary btn-md">Add Log</a>
+    <a href="/company/profile/committee/{{currentCommittee._id}}/update" type="button" class="btn btn-primary btn-md">Update</a>
+  
+    <h3> Members </h3>
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="m in currentCommittee.members.list">
+          <td><a href="/company/profile/customer/{{m.details._id}}/">{{m.details.name}}</a></td>
+          <td>{{m.details.phone}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3> Update Details </h3>
+
+    <form class="form" name="form" ng-submit="updateCommittee(form)" novalidate>
+      <div class="form-group">           
+        <label>Committee Title</label>
+        <input placeholder="Enter your Committee Title" value="{{currentCommittee.title}}" type="text" name="title" class="form-control" ng-model="updateThisCommittee.title"/>
+      </div>
+      <p class="help-block"> {{ message }} </p>
+      <button class="btn btn-lg btn-primary" type="submit">Update</button>
+    </form>
+  </div> 
+</div>

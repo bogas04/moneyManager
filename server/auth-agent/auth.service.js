@@ -6,11 +6,11 @@ var config = require('../config/environment');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
-var Admin = require('../api/admin/admin.model');
+var Agent = require('../api/agent/agent.model');
 var validateJwt = expressJwt({ secret: config.secrets.session });
 
 /**
- * Attaches the admin object to the request if authenticated
+ * Attaches the agent object to the request if authenticated
  * Otherwise returns 403
  */
 function isAuthenticated() {
@@ -23,27 +23,27 @@ function isAuthenticated() {
       }
       validateJwt(req, res, next);
     })
-    // Attach admin to request
+    // Attach agent to request
     .use(function(req, res, next) {
-      //console.log(req.admin,req.user);
-      Admin.findById(req.user._id, function (err, admin) {
+      //console.log(req.agent,req.user);
+      Agent.findById(req.user._id, function (err, agent) {
         if (err) return next(err);
-        if (!admin) return res.send(401);
+        if (!agent) return res.send(401);
 
-        req.admin = admin;
+        req.agent = agent;
         next();
       });
     });
 }
 
 /**
- * Checks if the admin role meets the minimum requirements of the route
+ * Checks if the agent role meets the minimum requirements of the route
  */
 function isSuper() {
   return compose()
     .use(isAuthenticated())
     .use(function meetsRequirements(req, res, next) {
-      if (req.admin.isSuper) {
+      if (req.agent.isSuper) {
         next();
       }
       else {
@@ -63,8 +63,8 @@ function signToken(id) {
  * Set token cookie directly for oAuth strategies
  */
 function setTokenCookie(req, res) {
-  if (!req.admin) return res.json(404, { message: 'Something went wrong, please try again.'});
-  var token = signToken(req.admin._id);
+  if (!req.agent) return res.json(404, { message: 'Something went wrong, please try again.'});
+  var token = signToken(req.agent._id);
   res.cookie('token', JSON.stringify(token));
   res.redirect('/');
 }

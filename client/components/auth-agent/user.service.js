@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('moneyManagerApp')
-  .factory('Admin', function ($resource) {
-    return $resource('/api/admin/:id/:controller', {
+  .factory('Agent', function ($resource) {
+    return $resource('/api/agent/:id/:controller', {
       id: '@_id'
     },
     {

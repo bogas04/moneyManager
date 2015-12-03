@@ -10,10 +10,13 @@ exports.setup = function (Admin, config) {
       Admin.findOne({
         email: email.toLowerCase()
       }, function(err, admin) {
+        console.log(err);
+        console.log(admin);
+        console.log("Hello");
         if (err) return done(err);
 
         if (!admin) {
-          return done(null, false, { message: 'This email is not registered.' });
+          return done(null, false, { message: 'This email is not at all registered.' });
         }
         if (!admin.authenticate(password)) {
           return done(null, false, { message: 'This password is not correct.' });

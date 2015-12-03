@@ -11,14 +11,15 @@
     </div>
     <div collapse="isCollapsed.secondary" class="navbar-collapse collapse" id="navbar-secondary">
       <ul class="nav navbar-nav">
-        <li> <a href="/company"> <span class="glyphicon glyphicon-globe"></span> Notifications </a> </li>
-        <li> <a href="/company/list/agent"><span class="glyphicon glyphicon-briefcase"> </span> Agents </a></li>
-        <li> <a href="/company/list/terms"><span class="glyphicon glyphicon-transfer"> </span> Lending </a></li>
-        <li> <a href="company/list/committee"><span class="glyphicon glyphicon-list-alt"> </span> Committees </a></li>
+        <li> <a href="/company/notifications"> <span class="glyphicon glyphicon-globe"></span> Notifications </a> </li>
         <li> <a href="/company/list/ledger"> <span class="glyphicon glyphicon-book"> </span> Ledger </a></li>
         <li> <a href="/company/list/customer/"> <span class="glyphicon glyphicon-user"> </span> Customers </a></li>
         <li> <a href="/company/profile"> <span class="glyphicon glyphicon-wrench"> </span> Account </a></li>
+        <li ng-show="company.subscription.options.lending"> <a href="/company/list/terms"><span class="glyphicon glyphicon-transfer"> </span> Lending </a></li>
+        <li ng-show="company.subscription.options.committees"> <a href="company/list/committee"><span class="glyphicon glyphicon-list-alt"> </span> Committees </a></li>
+        <li ng-show="company.subscription.options.agents"> <a href="/company/list/agent"><span class="glyphicon glyphicon-briefcase"> </span> Agents </a></li>
       </ul>
     </div>
   </div>
 </div>
+{{currentCompany}}

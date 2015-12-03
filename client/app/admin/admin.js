@@ -12,15 +12,19 @@ angular.module('moneyManagerApp')
       controller: 'AdminCtrl'
     })
     .when('/admin/list/company', {
-      templateUrl: 'app/admin/list-companies.html',
+      templateUrl: 'app/admin/company/list.html',
+      controller: 'AdminCtrl'
+    })
+    .when('/admin/profile/company/:companyId', {
+      templateUrl: 'app/admin/company/profile.html',
       controller: 'AdminCtrl'
     })
     .when('/admin/list/admin', {
-      templateUrl: 'app/admin/list-admins.html',
+      templateUrl: 'app/admin/list.html',
       controller: 'AdminCtrl'
     })
     .when('/admin/create/company', {
-      templateUrl: 'app/admin/create-company.html',
+      templateUrl: 'app/admin/company/create.html',
       controller: 'AdminCtrl'
     });
   });

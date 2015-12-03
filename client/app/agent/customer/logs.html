@@ -1,0 +1,40 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div ng-include="'components/navbar/navbar-secondary-agent.html'"></div>
+<div class="container">
+  <div class="page-header">
+    <h1>{{currentCustomer.name}} Logs for {{currentTerm.title}}</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="company/list/customer/">Customer List</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}">Customer Profile</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}/terms/">Customer Terms</a></li>
+    <li><a href="company/profile/customer/{{currentCustomer._id}}/terms/{{currentTerm.title}}">View Term</a></li>
+    <li><a href="#">View Logs</a></li>
+  </ol>
+  <div class="row container"> 
+    <div class="form-group">
+      <a href="/company/profile/customer/{{currentCustomer._id}}/terms/{{currentTerm.title}}/logs/add" class="btn btn-primary">Add New</a>
+    </div>
+    <table class="table table-responsive table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Credit</th>
+          <th>Debit</th>
+          <th>Balance</th>
+          <th>Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="l in logsWithBalance(currentTerm.logs)"> 
+          <td>{{stringifyDate(l.date)}}</td>
+          <td class="{{l.type==='credit'?'success':''}}">{{l.type === 'credit' ? "₹" + roundTo(l.amount) : ""}}</td>
+          <td class="{{l.type==='debit'?'danger':''}}">{{l.type === 'debit' ? "₹" + roundTo(l.amount) : ""}}</td>
+          <td>{{l.balance}} </td>
+          <td><button class="btn btn-xs btn-danger" ng-click="deleteLog(t)">&times; Delete This Log</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div> 
+</div>

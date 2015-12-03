@@ -1,32 +1,33 @@
 'use strict';
 
 angular.module('moneyManagerApp')
-  .factory('Auth', function Auth($location, $rootScope, $http, Admin, $cookieStore, $q) {
-    var currentAdmin = {};
+  .factory('AuthAgent', function Auth($location, $rootScope, $http, Agent, $cookieStore, $q) {
+    var currentAgent = {};
     if($cookieStore.get('token')) {
-      currentAdmin = Admin.get();
+      currentAgent = Agent.get();
     }
 
     return {
 
       /**
-       * Authenticate admin and save token
+       * Authenticate agent and save token
        *
-       * @param  {Object}   admin     - login info
+       * @param  {Object}   agent     - login info
        * @param  {Function} callback - optional
        * @return {Promise}
        */
-      login: function(admin, callback) {
+      login: function(agent, callback) {
         var cb = callback || angular.noop;
         var deferred = $q.defer();
 
-        $http.post('/auth/local', {
-          email: admin.email,
-          password: admin.password
+        $http.post('/auth-agent/local', {
+          username: agent.username,
+          email: agent.email,
+          password: agent.password
         }).
         success(function(data) {
           $cookieStore.put('token', data.token);
-          currentAdmin = Admin.get();
+          currentAgent = Agent.get();
           deferred.resolve(data);
           return cb();
         }).
@@ -40,30 +41,30 @@ angular.module('moneyManagerApp')
       },
 
       /**
-       * Delete access token and admin info
+       * Delete access token and agent info
        *
        * @param  {Function}
        */
       logout: function() {
         $cookieStore.remove('token');
-        currentAdmin = {};
+        currentAgent = {};
       },
 
       /**
-       * Create a new admin
+       * Create a new agent
        *
-       * @param  {Object}   admin     - admin info
+       * @param  {Object}   agent     - agent info
        * @param  {Function} callback - optional
        * @return {Promise}
        */
-      createAdmin: function(admin, callback) {
+      createAgent: function(agent, callback) {
         var cb = callback || angular.noop;
 
-        return Admin.save(admin,
+        return Agent.save(agent,
           function(data) {
             $cookieStore.put('token', data.token);
-            currentAdmin = Admin.get();
-            return cb(admin);
+            currentAgent = Agent.get();
+            return cb(agent);
           },
           function(err) {
             this.logout();
@@ -80,42 +81,42 @@ angular.module('moneyManagerApp')
        */
       update: function(newDetails, callback) {
         var cb = callback || angular.noop;
-        return Admin.update({ id: currentAdmin._id }, newDetails, function(admin) {
-          return cb(admin);
+        return Agent.update({ id: currentAgent._id }, newDetails, function(agent) {
+          return cb(agent);
         }, function(err) {
           return cb(err);
         }).$promise;
       },
 
       /**
-       * Gets all available info on authenticated admin
+       * Gets all available info on authenticated agent
        *
-       * @return {Object} admin
+       * @return {Object} agent
        */
-      getCurrentAdmin: function() {
-        return currentAdmin;
+      getCurrentAgent: function() {
+        return currentAgent;
       },
 
       /**
-       * Check if a admin is logged in
+       * Check if a agent is logged in
        *
        * @return {Boolean}
        */
       isLoggedIn: function() {
-        return currentAdmin.hasOwnProperty('isSuper');
+        return currentAgent.hasOwnProperty('company');
       },
 
       /**
-       * Waits for currentAdmin to resolve before checking if admin is logged in
+       * Waits for currentAgent to resolve before checking if agent is logged in
        */
       isLoggedInAsync: function(cb) {
-        if(currentAdmin.hasOwnProperty('$promise')) {
-          currentAdmin.$promise.then(function() {
+        if(currentAgent.hasOwnProperty('$promise')) {
+          currentAgent.$promise.then(function() {
             cb(true);
           }).catch(function() {
             cb(false);
           });
-        } else if(currentAdmin.hasOwnProperty('isSuper')) {
+        } else if(currentAgent.hasOwnProperty('company')) {
           cb(true);
         } else {
           cb(false);
@@ -123,12 +124,12 @@ angular.module('moneyManagerApp')
       },
 
       /**
-       * Check if a admin is an admin
+       * Check if a agent is an agent
        *
        * @return {Boolean}
        */
-      isSuper: function() {
-        return currentAdmin.isSuper;
+      company: function() {
+        return currentAgent.company;
       },
 
       /**

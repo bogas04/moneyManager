@@ -1,0 +1,85 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div ng-include="'components/navbar/navbar-secondary-agent.html'"></div>
+<script>
+$('.input-group.date').datepicker({
+  format: "dd/mm/yyyy",
+  todayBtn: "linked",
+  orientation: "bottom auto",
+  autoclose: true,
+  todayHighlight: true
+});
+</script>
+<div class="container">
+  <div class="page-header">
+    <h1>Create Committee</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="company">Home</a></li>
+    <li><a href="#">Create Committee</a></li>
+  </ol>
+  <div class="row container"> 
+    <h3> Committee Details </h3> 
+    <form class="form" name="form" ng-submit="createCommittee(form)" novalidate>
+
+      <div class="form-group">           
+        <label>Committee Title</label>
+        <input placeholder="Enter your Committee Title" type="text" name="title" class="form-control" ng-model="createThisCommittee.title" required/>
+      </div>
+
+      <div class="form-group">           
+        <label>Start Date</label>
+        <div class="input-group date">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span><input type="text" class="form-control" ng-model="createThisCommittee.start_date" placeholder="Enter start date of this committee" required/>
+        </div>       
+      </div>
+
+      <div class="form-group">           
+        <label>Amount </label>
+        <div class="input-group">
+          <div class="input-group-addon">₹</div>
+          <input placeholder="Enter your Amount" type="text" name="amount" class="form-control" ng-model="createThisCommittee.amount" required/>
+        </div>
+      </div>
+
+      <div class="form-group form-inline">           
+        <label>Duration</label>
+        <input placeholder="Enter your Duration Count" type="text" name="duration.count" class="form-control" ng-model="createThisCommittee.duration.count"/>
+        <select  name="duration.parameter" ng-model="createThisCommittee.duration.parameter" class="form-control">
+          <option value="months"> Months </option>
+          <option value="years"> Years </option>
+        </select>
+      </div>
+
+      <div class="form-group">           
+        <label>Number of Members </label>
+        <div class="input-group">
+          <div class="input-group-addon">#</div>
+          <input placeholder="No. of Members" type="text" name="member.count" class="form-control" ng-model="createThisCommittee.members.count" required/>
+        </div>
+      </div>
+
+      <h4> Select {{getRemainingMemberCount() || ""}} Members from your current customers ({{customers.length}}) </h4>
+      <div class="form-group form-inline">
+        <label> Filter by typing name or phone number </label>
+        <input type="text" name="filterCustomer" class="form-control" ng-model="filterCustomer" placeholder="Type here"/>
+      </div>
+      <table class="table table-responsive table-striped table-bordered">
+        <thead>
+          <tr>
+            <th> <span class="glyphicon glyphicon-check"></span> </th>
+            <th> Name </th>
+            <th> Phone </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr  ng-repeat="cus in customers | filter : filterCustomer">
+            <td> <input type="checkbox" ng-click="toggleMember(cus._id)" ng-disabled="getRemainingMemberCount() === 0"></td>
+            <td><a href="/company/profile/customer/{{cus._id}}/">{{cus.name}}</a></td>
+            <td>{{cus.phone}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="help-block"> {{ message }} </p>
+      <button class="btn btn-lg btn-primary" type="submit">Create</button>
+    </form>
+  </div>

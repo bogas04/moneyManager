@@ -11,7 +11,7 @@ $('.input-group.date').datepicker({
 </script>
 <div class="container">
   <div class="page-header">
-    <h1>Term Details</h1>
+    <h1>Add Term for {{currentCustomer.name}}</h1>
   </div>
   <ol class="breadcrumb">  
     <li><a href="company">Home</a></li>
@@ -21,60 +21,124 @@ $('.input-group.date').datepicker({
     <li><a href="#">Add Term</a></li>
   </ol>
   <div class="row container"> 
-    <h3> Add Term Details </h3>
+    <h3> Term Details </h3>
     <form class="form" name="form" ng-submit="addTerm(form)" novalidate>
       <div class="form-group" ng-class="{ 'has-success': form.name.$valid && submitted, 'has-error': form.name.$invalid && submitted }">            
         <label>*Term Name</label>
         <input placeholder="Enter your Term Name" type="text" name="name" class="form-control" ng-model="addThisTerm.title" required/>
         <p class="help-block" ng-show="form.name.$error.required && submitted">
-          A Term name is required
-        </p>
-      </div>
-      <div class="form-group" ng-class="{ 'has-success': form.start_date.$valid && submitted, 'has-error': form.start_date.$invalid && submitted }">           
-        <label>*Term Start Date</label>
-        <div class="input-group date" >
-          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-          <input type="text" class="form-control" name="start_date" ng-change="updateTermDuration()" ng-model="addThisTerm.start_date" placeholder="Enter start date of this term" required>
-        </div>       
-        <p class="help-block" ng-show="form.name.$error.required && submitted">
-          Start date is required
-        </p>
-      </div>
-      <div class="form-group">           
-        <label>Term End Date</label>
-        <div class="input-group date">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-          <input type="text" class="form-control" name="end_date" ng-change="updateTermDuration()" ng-model="addThisTerm.end_date" placeholder="Enter end date of this term" >
-        </div>       
-      </div>
-      <div class="form-group" ng-class="{ 'has-success': form.amount.$valid && submitted, 'has-error': form.amount.$invalid && submitted }" >           
-        <label>*Term Amount</label>
-        <div class="input-group">
-          <span class="input-group-addon">₹</span>
-          <input type="number" class="form-control" name="amount" ng-model="addThisTerm.amount" placeholder="Enter amount of this term" required/>
-        </div>       
-        <p class="help-block" ng-show="form.amount.$error.required && submitted">
-          A amount is required
+        A Term name is required
         </p>
       </div>
 
-      <div class="form-group">
-        <label>Interest Rate</label>
-        <div class="input-group">
-          <span class="input-group-addon">@</span>
-          <input placeholder=" Interest Rate" type="text" name="interest.rate" class="form-control" ng-model="addThisTerm.interest.rate" />
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group" ng-class="{ 'has-success': form.start_date.$valid && submitted, 'has-error': form.start_date.$invalid && submitted }">
+            <label>*Term Start Date</label>
+            <div class="input-group date" >
+              <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+              <input type="text" class="form-control" name="start_date" ng-change="updateTermDuration()" ng-model="addThisTerm.startDate" placeholder="Enter start date of this term" required>
+            </div>       
+            <p class="help-block" ng-show="form.name.$error.required && submitted">
+            Start date is required
+            </p>
+          </div>
+
+          <div class="form-group form-inline">           
+            <label>Term duration</label>
+            <p class="help-block">
+            Enter the duration for which the term is valid for. For eg 5 years.
+            </p>
+            <input placeholder="Term Duration" type="number" name="term.duration.count" class="form-control" ng-model="addThisTerm.duration.count" required/>
+            <select name="term.duration.parameter" ng-model="addThisTerm.duration.parameter" class="form-control">
+              <option value="months"> Months </option>
+              <option value="years"> Years </option>
+            </select>
+            <div class="help-block" ng-if="addThisTerm.startDate && addThisTerm.duration.parameter && addThisTerm.duration.count && addThisTerm.duration.count != 0">The term ends on <strong>{{stringifyDate(computeEndDate(addThisTerm.startDate, addThisTerm.duration))}}</strong></div>
+          </div>
+
+          <div class="form-group form-inline">
+            <label>*Installment Duration</label>
+            <input placeholder="Installment Duration" ng-keyup="updateTermDuration()" type="text" name="installments.duration.count" class="form-control" ng-model="addThisTerm.installments.duration.count" required/>
+            <select name="installments.duration.parameter" ng-model="addThisTerm.installments.duration.parameter" class="form-control">
+              <option value="months"> Months </option>
+              <option value="years"> Years </option>
+            </select>
+            <div class="help-block" ng-if="addThisTerm.startDate && addThisTerm.duration.parameter && addThisTerm.duration.count && addThisTerm.installments.duration.count">
+              There will be <strong>{{computeInstallmentCount(addThisTerm.startDate, addThisTerm.duration, addThisTerm.installments)}}</strong> installments 
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="form-group form-inline">
-        <label>*Number of Installments</label>
-        <input placeholder="No. of Installments" type="text" name="installments.count" class="form-control" ng-model="addThisTerm.installments.count" required/>
-        <label>*Installment Duration</label>
-        <input placeholder="Installment Duration" ng-keyup="updateTermDuration()" type="text" name="installments.duration.count" class="form-control" ng-model="addThisTerm.installments.duration.count" required/>
-        <select name="installments.duration.parameter" ng-model="addThisTerm.installments.duration.parameter" class="form-control">
-          <option value="days"> Days </option>
-          <option value="months"> Months </option>
-          <option value="years"> Years </option>
-        </select>
+        <div class="col-md-6">
+          <div class="form-group form-inline" ng-class="{ 'has-success': form.amount.$valid && submitted, 'has-error': form.amount.$invalid && submitted }" >
+            <label>*Term Amount</label>
+            <div class="input-group">
+              <span class="input-group-addon">₹</span>
+              <input type="number" class="form-control" name="amount" ng-model="addThisTerm.amount" placeholder="Enter amount of term" required/>
+            </div>       
+            <p class="help-block" ng-show="form.amount.$error.required && submitted">
+            A amount is required
+            </p>
+          </div>
+
+          <div class="form-group form-inline">
+            <label>Interest Rate</label>
+            <div class="input-group">
+              <span class="input-group-addon">@</span>
+              <input placeholder=" Interest Rate" type="text" name="interest.rate" class="form-control" ng-model="addThisTerm.interest.rate" />
+            </div>
+            <label>per</label>
+            <div class="input-group">
+              <span class="input-group-addon">/</span>
+              <select class="form-control" name="interest.per" ng-model="addThisTerm.interest.per">
+                <option value="month">Month</option>
+                <option value="anum">Anum</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group form-inline">
+            <label> Type of interest </label>
+            <div class="radio">
+              <label>
+                <input type="radio" name="interest-type" value="EMI" ng-model="addThisTerm.interest.type">
+                EMI 
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="interest-type" value="Simple" ng-model="addThisTerm.interest.type">
+                Simple interest 
+              </label>
+            </div>
+          </div>
+          <div class="help-block" ng-if="
+          addThisTerm.duration.count != 0 &&
+          addThisTerm.startDate &&
+          addThisTerm.interest.rate &&
+          addThisTerm.interest.type && 
+          addThisTerm.interest.per
+          ">
+            You will take ₹ {{(computeLogAmount(addThisTerm))}} every installment 
+
+            <div class="help-block" ng-if="addThisTerm.interest.type == 'EMI' && addThisTerm.interest.per == 'anum'">
+              <p> For EMI: </p>
+              <ul>
+                <li>Per year interest <strong>₹ {{addThisTerm.interest.rate * addThisTerm.amount * 0.01}}</strong></li>
+                <li>Total interest <strong>₹ {{addThisTerm.interest.rate * addThisTerm.amount * 0.01 * addThisTerm.duration.count}}</strong></li>
+                <li>Total amount to be paid <strong>₹ {{addThisTerm.interest.rate * addThisTerm.amount * 0.01 * addThisTerm.duration.count + addThisTerm.amount}}</strong></li>
+                <li>Amount to be paid per installment <strong>₹ {{computeLogAmount(addThisTerm)}}</strong></li>
+                <ul>
+            </div>
+
+            <div class="help-block" ng-if="addThisTerm.interest.type == 'Simple' && addThisTerm.interest.per == 'anum'">
+              <ul>
+                <li>Per year interest <strong>₹ {{addThisTerm.interest.rate * addThisTerm.amount * 0.01}}</strong></li>
+                <ul>
+            </div>
+
+          </div>
+        </div>
       </div>
       <p class="help-block"> {{ message }} </p>
       <button class="btn btn-lg btn-primary" type="submit">Add</button>

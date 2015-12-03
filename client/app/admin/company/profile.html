@@ -1,0 +1,65 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class='container'>
+  <div class="page-header">
+    <h1>{{currentCompany.name}} Companies</h1>
+  </div>
+  <ol class="breadcrumb">  
+    <li><a href="admin">Home</a></li>
+    <li><a href="admin/list/company">Company List</a></li>
+    <li><a href="#">Company Profile</a></li>
+  </ol>
+  <div class="row">
+    <div class="col-md-6">
+      <h3> Profile </h3>
+      <dl class="dl-horizontal">
+        <dt>Company Name:</dt> <dd>{{currentCompany.name}}</dd>
+        <dt>Username:</dt> <dd>{{currentCompany.username}}</dd>
+        <dt>Owner Name:</dt> <dd>{{currentCompany.owner.name}}</dd>
+        <dt>Owner Email:</dt> <dd>{{currentCompany.owner.email || "N/A"}}</dd>
+      </dl>
+    </div>
+    <div class="col-md-6">
+      <h3> Modules </h3>
+      <div class="dl-horizontal">
+        <div style="margin-top:5px;">
+          <dt>Lending:</dt> 
+          <dd>
+          <button type="button" class="btn btn-md " 
+                                ng-class="{'btn-success': currentCompany.subscription.options.lending === true, 'btn-danger': currentCompany.subscription.options.lending !== true}" 
+                                ng-change="setSaveChanges()"
+                                ng-model="currentCompany.subscription.options.lending" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+            {{currentCompany.subscription.options.lending === true? "ON" : "OFF"}}
+          </button>
+          </dd>
+        </div>
+        <div style="margin-top:5px;">
+          <dt>Committees:</dt> 
+          <dd>
+          <button type="button" class="btn btn-md " 
+                                ng-class="{'btn-success': currentCompany.subscription.options.committees === true, 'btn-danger': currentCompany.subscription.options.committees !== true}"
+                                ng-change="setSaveChanges()"
+                                ng-model="currentCompany.subscription.options.committees" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+            {{currentCompany.subscription.options.committees === true? "ON" : "OFF"}}
+          </button>
+          </dd>
+        </div>
+        <div style="margin-top:5px;">
+          <dt>Agents:</dt> 
+          <dd>
+          <button type="button" class="btn btn-md " 
+                                ng-class="{'btn-success': currentCompany.subscription.options.agents === true, 'btn-danger': currentCompany.subscription.options.agents !== true}" 
+                                ng-change="setSaveChanges()"
+                                ng-model="currentCompany.subscription.options.agents" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+            {{currentCompany.subscription.options.agents === true? "ON" : "OFF"}}
+          </button>
+          </dd>   
+        </div>
+        <div style="margin-top: 20px;">
+          <button class="btn btn-info" ng-if="saveChanges" ng-click="updateCompany(currentCompany)">Save Changes</button>
+          <alert ng-if="savedChanges" type="success" data-dismiss="alert">Your changes are successfully saved!</alert>
+          <alert ng-if="errorInSavingChanges" type="danger" data-dismiss="alert">Your changes couldn't be saved!</alert>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

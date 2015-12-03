@@ -11,6 +11,10 @@ angular.module('moneyManagerApp')
     templateUrl: 'app/company/profile.html',
     controller: 'CompanyCtrl'
   })
+  .when('/company/notifications', {
+    templateUrl: 'app/company/notifications.html',
+    controller: 'CompanyCtrl'
+  })
   .when('/company/list/agent', { // Agent Related
     templateUrl: 'app/company/agent/list.html',
     controller: 'CompanyCtrl'
@@ -41,6 +45,14 @@ angular.module('moneyManagerApp')
   })
   .when('/company/profile/customer/:id', {
     templateUrl: 'app/company/customer/profile.html',
+    controller: 'CompanyCtrl'
+  })
+  .when('/company/profile/customer/:id/comments/', { // Customer Comments Related 
+    templateUrl: 'app/company/customer/comments.html',
+    controller: 'CompanyCtrl'
+  })
+  .when('/company/profile/customer/:id/comments/add', { 
+    templateUrl: 'app/company/customer/add-comment.html',
     controller: 'CompanyCtrl'
   })
   .when('/company/list/ledger', { // Customer Ledger Related

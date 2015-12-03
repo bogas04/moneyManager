@@ -14,11 +14,6 @@ function handleError(res, err) {
 var validationError = function(res, err) {
   return res.json(422, err);
 };
-// TODO Improve response JSONs 
-// TODO Add some API secret logic
-// TODO Validations
-// TODO API spec
-
 
 // Get list of admins
 // Super Admin Only
@@ -111,6 +106,34 @@ exports.create_company = function (req, res) {
     }
     return res.json(201, {error : false, msg : "Company added", obj : company.profile}); 
   });
+};
+
+exports.retrieve_company = function (req, res) {
+  var companyId = req.params.id;
+  
+  if(req.admin.isSuper || req.admin.companies.indexOf(companyId) > -1) {
+    Company.findOne({ _id : companyId }, '-salt -hashedPassword -__v').exec(function (err, data) {
+      if(err) { return handleError(res, err); }
+      return res.json(200, data);
+    });
+  } else {
+    res.json(400, {error : true, msg : "You don't manage that company", data : null})
+  }
+   
+};
+
+exports.update_company = function (req, res) {
+  var companyId = req.params.id;
+
+  if(req.admin.isSuper || req.admin.companies.indexOf(companyId) > -1) {
+    Company.findOneAndUpdate({ _id : companyId }, req.body, function (err, data) {
+      if(err) { return handleError(res, err); }
+      return res.json(200, data);
+    });
+  } else {
+    res.json(400, {error : true, msg : "You don't manage that company", data : null})
+  }
+  
 };
 
 exports.authCallback = function(req, res, next) {

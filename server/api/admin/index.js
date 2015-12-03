@@ -13,6 +13,8 @@ router.get('/me', auth.isAuthenticated(), controller.me);
 router.put('/:id', auth.isAuthenticated(), controller.update);
 
 router.post('/company', auth.isAuthenticated(), controller.create_company);
+router.get('/company/:id', auth.isAuthenticated(), controller.retrieve_company);
+router.put('/company/:id', auth.isAuthenticated(), controller.update_company);
 
 // Super Admin API
 router.get('/', auth.isSuper(), controller.index);

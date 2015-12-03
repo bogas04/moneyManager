@@ -32,7 +32,7 @@
           <td class="{{l.type==='credit'?'success':''}}">{{l.type === 'credit' ? "₹" + roundTo(l.amount) : ""}}</td>
           <td class="{{l.type==='debit'?'danger':''}}">{{l.type === 'debit' ? "₹" + roundTo(l.amount) : ""}}</td>
           <td>{{l.balance}} </td>
-          <td><button class="btn btn-xs btn-danger" ng-click="deleteLog(t)">&times; Delete This Log</button></td>
+          <td><button class="btn btn-xs btn-danger" ng-click="deleteLog(l)">&times; Delete This Log</button></td>
         </tr>
       </tbody>
     </table>

@@ -15,20 +15,25 @@ var CustomerSchema = new Schema({
       longitude : String
     }
   },
+  comments : [{ comment : String, date : Date }],
   committees : [{ type : Schema.Types.ObjectId, ref : 'Committee' }],
   visible_to : [{ type : Schema.Types.ObjectId, ref : 'Agent' }],
   terms : [{
     title : String,
-    start_date : Date,
-    end_date : Date,
+    startDate : Date,
     amount : Number,
+    duration : { // The term is valid for next X months or years
+      count : Number,
+      parameter : { type : String, enum : ['months', 'years'] }
+    },
     interest : {
       rate :  Number,
-      type : { type : String , enum : ['simple', 'compound'] }
+      type : { type : String , enum : ['EMI', 'Simple'] },
+      per : { type : String, enum : ['month', 'anum'] }
     },
     installments : {
-      count : Number,
-      duration : {
+      count : Number,  // How many installments
+      duration : {     // Taken after every Y days,months or years
         count :  Number,
         parameter : { type : String, enum : ['days', 'months', 'years']}
       }
